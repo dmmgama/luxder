@@ -1,0 +1,774 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Luxder">
+<meta name="theme-color" content="#F4F2EC">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23F4F2EC'/><circle cx='50' cy='50' r='40' fill='none' stroke='%231C2A4A' stroke-width='4'/></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23F4F2EC'/><circle cx='50' cy='50' r='40' fill='none' stroke='%231C2A4A' stroke-width='5'/></svg>">
+<title>Luxder — Laboratório de Compatibilidade</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=IBM+Plex+Serif:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --paper:#F4F2EC; --ink:#14141A; --navy:#1C2A4A; --oxblood:#6B1D1D; --line:#C9C4B4; --line2:#D8D4C6;
+  --muted:#5B5A54; --stampred:#8A2020;
+  --display:'Cormorant Garamond','IBM Plex Serif',Georgia,serif; --serif:'IBM Plex Serif',Georgia,serif;
+  --body:'IBM Plex Sans','Segoe UI',system-ui,sans-serif; --mono:'IBM Plex Mono','Courier New',monospace;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-weight:400;padding-inline:16px;overflow-x:hidden;min-height:100vh;min-height:100dvh}
+.app{max-width:460px;margin:0 auto;min-height:100vh;min-height:100dvh;padding-bottom:env(safe-area-inset-bottom);display:flex;flex-direction:column}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:14px 0 10px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.top .brand{display:flex;flex-direction:column;line-height:1.1;cursor:pointer}
+.top .brand b{font-family:var(--display);font-weight:600;font-size:24px;letter-spacing:.02em;color:var(--navy)}
+.top .brand span{font-family:var(--mono);font-size:9px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+.top .ctr{display:flex;align-items:center;gap:10px}
+.top .sw{display:flex;gap:4px}
+.top .sw button{min-height:0;padding:6px 10px;font-size:11px;font-family:var(--mono);font-weight:500;border-radius:2px;background:transparent;color:var(--ink);border:1px solid var(--line);box-shadow:none;letter-spacing:.06em}
+.top .sw button.on{background:var(--navy);color:var(--paper);border-color:var(--navy)}
+.top .verA{font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--muted);text-decoration:none;border-bottom:1px dotted var(--muted);white-space:nowrap}
+.screen{display:none;flex:1;flex-direction:column;gap:16px;padding-block:18px 24px}
+.screen.on{display:flex}
+small-caps,.sc{font-variant:small-caps;letter-spacing:.06em}
+.label{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:8px}
+.label b{color:var(--navy);font-weight:500}
+h1{font-family:var(--display);font-weight:600;font-size:clamp(30px,8.5vw,40px);line-height:1.08;margin:0;color:var(--ink)}
+h2{font-family:var(--display);font-weight:600;font-size:clamp(24px,6.8vw,30px);line-height:1.12;margin:0;color:var(--ink)}
+p{margin:0;font-size:16px;line-height:1.5;font-family:var(--serif)}
+.small{font-size:12.5px;color:var(--muted);line-height:1.5;font-family:var(--body)}
+.mono{font-family:var(--mono)}
+.center{text-align:center}
+.spacer{flex:1}
+hr.rule{border:0;border-top:1px solid var(--line);margin:0}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btns.col{grid-template-columns:1fr}
+button{-webkit-appearance:none;appearance:none;touch-action:manipulation;font-family:var(--body);font-weight:600;font-size:15px;letter-spacing:.02em;border:1px solid var(--ink);border-radius:2px;padding:14px 10px;color:var(--ink);background:var(--paper);cursor:pointer;min-height:88px;line-height:1.25;transition:background .1s,color .1s}
+button:active{background:var(--ink);color:var(--paper)}
+button:focus-visible{outline:2px solid var(--navy);outline-offset:2px}
+button:disabled{opacity:.35}
+button.primary{background:var(--navy);color:var(--paper);border-color:var(--navy)}
+button.primary:active{background:var(--ink)}
+button.oxblood{background:var(--oxblood);color:var(--paper);border-color:var(--oxblood)}
+button.ghost{background:transparent;border:1px solid var(--line);min-height:64px;font-size:13px}
+.card{background:#fff;border:1px solid var(--line);border-radius:2px;padding:18px;display:flex;flex-direction:column;gap:10px;position:relative}
+.card::before{content:'';position:absolute;top:6px;left:6px;right:-6px;bottom:-6px;border:1px solid var(--line2);z-index:-1}
+.opts{display:grid;grid-template-columns:1fr;gap:8px}
+.opt{background:#fff;border:1px solid var(--line);border-radius:2px;padding:14px 16px;display:flex;align-items:center;gap:10px;min-height:64px;box-shadow:none;color:var(--ink);font-family:var(--body);font-weight:500;font-size:14.5px;text-align:left}
+.opt b.let{font-family:var(--mono);font-weight:500;color:var(--navy);flex:none}
+.opt:active,.opt.pick{border-color:var(--navy);background:#EEF0F4}
+.who{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--navy)}
+.who.f{color:var(--oxblood)}
+.ref{font-family:var(--mono);font-size:12px;letter-spacing:.04em;color:var(--muted)}
+.footline{font-family:var(--mono);font-size:10px;letter-spacing:.03em;color:var(--muted);line-height:1.6;border-top:1px solid var(--line);padding-top:10px}
+.seal{width:96px;height:96px;flex:none}
+.stamp{position:absolute;top:10px;right:10px;transform:rotate(-14deg);border:3px solid var(--stampred);color:var(--stampred);font-family:var(--mono);font-weight:700;font-size:16px;letter-spacing:.12em;padding:6px 10px;border-radius:4px;opacity:.85}
+.stamp.deny{border-color:var(--oxblood);color:var(--oxblood)}
+.stamp.big{position:static;transform:rotate(-8deg);align-self:center;font-size:26px;padding:10px 20px}
+.report{display:grid;grid-template-columns:1fr auto;gap:10px 14px;font-size:14.5px;align-items:baseline}
+.report .k{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.report b{font-family:var(--mono);font-size:16px;color:var(--navy);font-variant-numeric:tabular-nums;text-align:right}
+.findings{display:flex;flex-direction:column;gap:8px;font-size:14.5px;font-family:var(--serif)}
+.findings li{list-style:none;padding-left:16px;position:relative}
+.findings li::before{content:'—';position:absolute;left:0;color:var(--navy)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:#fff;border:1px solid var(--line);border-radius:2px;padding:8px 12px;font-family:var(--mono);font-size:12.5px;display:flex;align-items:center;gap:8px}
+.chip.m{border-color:var(--navy);color:var(--navy)} .chip.f{border-color:var(--oxblood);color:var(--oxblood)}
+.chip button{min-height:0;padding:1px 6px;font-size:12px;background:transparent;color:var(--muted);box-shadow:none;border:0;font-family:var(--body)}
+.lvl{display:flex;gap:4px}
+.lvl i{flex:1;height:6px;background:var(--line);font-style:normal} .lvl i.on{background:var(--oxblood)}
+.pad{aspect-ratio:1;max-width:240px;width:76%;margin:0 auto;border-radius:2px;background:#fff;border:1px solid var(--ink);display:grid;place-items:center;position:relative;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.pad::before{content:'';position:absolute;inset:10px;border:1px dashed var(--line)}
+.pad.hot{border-color:var(--navy)}
+.pad.go{border-color:var(--oxblood);background:#F4ECEC}
+.pad .ring{position:absolute;inset:-1px;border:3px solid var(--navy);clip-path:inset(0 0 var(--cut,100%) 0);transition:clip-path .05s linear}
+.pad .txt{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:center;padding:0 10px}
+.status{font-family:var(--mono);font-size:13px;letter-spacing:.03em;color:var(--navy);text-align:center;min-height:20px}
+.big{font-family:var(--mono);font-size:clamp(48px,16vw,72px);line-height:1;color:var(--navy);text-align:center;font-variant-numeric:tabular-nums;font-weight:500}
+.verdict{font-size:16px;text-align:center;line-height:1.4;font-family:var(--serif)}
+.score{display:grid;gap:0;border:1px solid var(--line)}
+.score .row{display:grid;grid-template-columns:1fr auto;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line);background:#fff}
+.score .row:last-child{border-bottom:0}
+.score .row.lead{background:#EEF0F4}
+.score .t{font-family:var(--mono);font-size:13px}
+.score .n{font-family:var(--mono);font-size:20px;color:var(--navy);font-variant-numeric:tabular-nums}
+.timer{font-family:var(--mono);font-size:clamp(56px,20vw,84px);line-height:1;text-align:center;color:var(--navy);font-variant-numeric:tabular-nums}
+.secret{filter:blur(10px);transition:filter .2s} .secret.show{filter:none}
+.daretxt{font-family:var(--serif);font-size:clamp(17px,5vw,20px);line-height:1.4;text-align:center;color:var(--ink)}
+.prize{color:var(--navy);text-align:center;font-size:13px;font-family:var(--mono)}
+.bikewrap{text-align:center}
+@media (prefers-reduced-motion:reduce){.screen{animation:none}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div class="brand" data-go="s-consent"><b>LUXDER</b><span>Laboratório de Compatibilidade</span></div>
+    <div class="ctr">
+      <a class="verA" href="../">Versão A</a>
+      <div class="sw"><button id="lang-pt" class="on">PT</button><button id="lang-en">EN</button></div>
+    </div>
+  </div>
+
+  <!-- 0: CONSENT -->
+  <section class="screen on" id="s-consent">
+    <div class="label"><b data-i="c0.tag"></b></div>
+    <div style="display:flex;gap:14px;align-items:center">
+      <svg class="seal" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="#1C2A4A" stroke-width="1.4"/><circle cx="50" cy="50" r="38" fill="none" stroke="#1C2A4A" stroke-width="1"/>
+        <path id="sealpath" d="M 50 12 A 38 38 0 1 1 49.9 12" fill="none"/>
+        <text font-family="IBM Plex Mono" font-size="5.6" letter-spacing="1.5" fill="#1C2A4A"><textPath href="#sealpath" startOffset="2%">LABORATÓRIO DE COMPATIBILIDADE · LISBOA</textPath></text>
+        <text x="50" y="47" text-anchor="middle" font-family="Cormorant Garamond" font-size="11" fill="#1C2A4A">L·C</text>
+        <text x="50" y="60" text-anchor="middle" font-family="IBM Plex Mono" font-size="6" fill="#1C2A4A" letter-spacing="1">MCMXCI</text></svg>
+      <h1 data-i="c0.h"></h1>
+    </div>
+    <p data-i="c0.p1"></p>
+    <p class="small" data-i="c0.p2"></p>
+    <hr class="rule">
+    <p class="small mono" data-i="c0.art"></p>
+    <div class="spacer"></div>
+    <div class="btns"><button class="primary" data-go="s-role" data-i="c0.yes"></button><button data-go="s-refuse" data-i="c0.no"></button></div>
+    <p class="footline" id="foot0"></p>
+  </section>
+
+  <!-- REFUSAL -->
+  <section class="screen" id="s-refuse">
+    <div class="label"><b data-i="rf0.tag"></b></div>
+    <h1 data-i="rf0.h"></h1>
+    <p data-i="rf0.p"></p>
+    <div class="spacer"></div>
+    <div class="btns col"><button class="ghost" data-go="s-consent" data-i="rf0.btn"></button></div>
+    <p class="footline" id="footRef"></p>
+  </section>
+
+  <!-- 1: ROLE -->
+  <section class="screen" id="s-role">
+    <div class="label"><b data-i="r1.tag"></b></div>
+    <h2 data-i="r1.h"></h2>
+    <p class="small" data-i="r1.p"></p>
+    <div class="opts">
+      <button class="opt" data-role="participante"><b class="let">A</b><span data-i="r1.a"></span></button>
+      <button class="opt" data-role="auditora"><b class="let">B</b><span data-i="r1.b"></span></button>
+      <button class="opt" data-role="comissao"><b class="let">C</b><span data-i="r1.c"></span></button>
+    </div>
+    <p class="footline" id="foot1"></p>
+  </section>
+
+  <!-- 2: SURVEY -->
+  <section class="screen" id="s-q">
+    <div class="label"><b id="qtag"></b></div>
+    <div class="who" id="qwho"></div>
+    <h2 id="qtext"></h2>
+    <div class="opts" id="opts"></div>
+    <p class="small" id="qhint"></p>
+    <p class="footline" id="footQ"></p>
+  </section>
+
+  <!-- 3: BIOMETRIC -->
+  <section class="screen" id="s-scan">
+    <div class="label"><b data-i="sc.tag"></b></div>
+    <h2 data-i="sc.h"></h2>
+    <p class="small" data-i="sc.p"></p>
+    <div class="pad" id="pad"><div class="ring"></div><div class="txt" id="padtxt"></div></div>
+    <div class="status" id="status"></div>
+    <p class="small center mono" id="protoline"></p>
+    <p class="footline" id="footSc"></p>
+  </section>
+
+  <!-- 4: VERDICT / PARECER -->
+  <section class="screen" id="s-verdict">
+    <div class="label"><b data-i="v.tag"></b></div>
+    <p class="ref" id="vref"></p>
+    <div class="big" id="vpct">61,37 %</div>
+    <p class="small center" id="vconf"></p>
+    <hr class="rule">
+    <ul class="findings" id="vfind"></ul>
+    <hr class="rule">
+    <p class="verdict" id="vrec"></p>
+    <div class="spacer"></div>
+    <div class="btns"><button class="primary" id="vHomo" data-i="v.homo"></button><button class="oxblood" id="vIndef" data-i="v.indef"></button></div>
+    <p class="footline" id="footV"></p>
+  </section>
+
+  <!-- CERTIFICATE -->
+  <section class="screen" id="s-cert">
+    <div class="card">
+      <div class="stamp big" data-i="cert.stamp"></div>
+      <div style="display:flex;justify-content:center"><svg class="seal" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="#1C2A4A" stroke-width="1.4"/><circle cx="50" cy="50" r="38" fill="none" stroke="#1C2A4A" stroke-width="1"/>
+        <path id="sealpath2" d="M 50 12 A 38 38 0 1 1 49.9 12" fill="none"/>
+        <text font-family="IBM Plex Mono" font-size="5.6" letter-spacing="1.5" fill="#1C2A4A"><textPath href="#sealpath2" startOffset="2%">LABORATÓRIO DE COMPATIBILIDADE · LISBOA</textPath></text>
+        <text x="50" y="47" text-anchor="middle" font-family="Cormorant Garamond" font-size="11" fill="#1C2A4A">L·C</text>
+        <text x="50" y="60" text-anchor="middle" font-family="IBM Plex Mono" font-size="6" fill="#1C2A4A" letter-spacing="1">MCMXCI</text></svg></div>
+      <h2 class="center" data-i="cert.h"></h2>
+      <p class="verdict" id="cert-text"></p>
+      <p class="ref center" id="cert-ref"></p>
+      <p class="small center" data-i="cert.valid"></p>
+    </div>
+    <div class="spacer"></div>
+    <div class="btns col"><button id="cert-again" data-i="cert.again"></button><button class="primary" data-go="s-setup" data-i="cert.group"></button></div>
+    <p class="footline" id="footCert"></p>
+  </section>
+
+  <!-- MEDIDA CORRETIVA -->
+  <section class="screen" id="s-corr">
+    <div class="label"><b id="corrtag"></b></div>
+    <div class="stamp deny" data-i="corr.stamp"></div>
+    <div class="lvl"><i></i><i></i><i></i></div>
+    <h2 id="corrtitle"></h2>
+    <div class="card"><p class="small" id="corrwho"></p><p id="corrtext"></p></div>
+    <p class="small" id="corrmeta"></p>
+    <div class="spacer"></div>
+    <div class="btns"><button class="primary" data-go="s-scan" data-i="corr.done"></button><button class="oxblood" id="corrAgain" data-i="corr.again"></button></div>
+    <div class="btns col"><button class="ghost" data-go="s-archive" data-i="corr.archive"></button></div>
+    <p class="footline" id="footCorr"></p>
+  </section>
+
+  <section class="screen" id="s-archive">
+    <div class="label"><b data-i="ar.tag"></b></div>
+    <h1 data-i="ar.h"></h1>
+    <p data-i="ar.p"></p>
+    <div class="spacer"></div>
+    <div class="btns col"><button data-go="s-report" data-i="ar.rep"></button><button class="ghost" data-go="s-consent" data-i="ar.restart"></button></div>
+    <p class="footline" id="footAr"></p>
+  </section>
+
+  <!-- FINAL REPORT -->
+  <section class="screen" id="s-report">
+    <div class="label"><b data-i="rp.tag"></b></div>
+    <h2 data-i="rp.h"></h2>
+    <div class="card report">
+      <span class="k" data-i="rp.rigor"></span><b>94 %</b>
+      <span class="k" data-i="rp.pac"></span><b id="rp-pac">12 %</b>
+      <span class="k" data-i="rp.corr"></span><b id="rp-corr">0</b>
+      <span class="k" data-i="rp.acc"></span><b id="rp-acc">0 %</b>
+      <span class="k" data-i="rp.rec"></span><b data-i="rp.recv"></b>
+    </div>
+    <p class="small" data-i="rp.foot"></p>
+    <div class="spacer"></div>
+    <div class="btns col"><button class="ghost" data-go="s-consent" data-i="rp.btn"></button></div>
+    <p class="footline" id="footRp"></p>
+  </section>
+
+  <!-- ===== GROUP SESSION ===== -->
+  <section class="screen" id="s-setup">
+    <div class="label"><b data-i="g.tag"></b></div>
+    <h1 data-i="g.h"></h1>
+    <p data-i="g.p"></p>
+    <div class="chips" id="chips"></div>
+    <div class="btns"><button class="ghost" id="add-m" data-i="g.addm"></button><button class="ghost" id="add-f" data-i="g.addf"></button></div>
+    <div class="card"><p id="g-mode" class="mono" style="color:var(--navy);font-size:14px"></p><p class="small" id="g-modep"></p></div>
+    <div class="spacer"></div>
+    <div class="btns col"><button class="primary" id="g-start" disabled data-i="g.start"></button></div>
+    <p class="footline" id="footG"></p>
+  </section>
+
+  <section class="screen" id="s-pair">
+    <div class="label"><b data-i="pr.tag"></b></div>
+    <div class="who" id="pr-who"></div>
+    <h2 id="pr-q"></h2>
+    <p class="small" id="pr-hint"></p>
+    <div class="opts" id="pr-opts"></div>
+    <p class="footline" id="footPr"></p>
+  </section>
+
+  <section class="screen" id="s-pairs">
+    <div class="label"><b data-i="prs.tag"></b></div>
+    <h2 data-i="prs.h"></h2>
+    <div class="score" id="pairs-list"></div>
+    <p class="small" data-i="prs.p"></p>
+    <div class="spacer"></div>
+    <div class="btns col"><button class="primary" id="prs-go" data-i="prs.btn"></button></div>
+    <p class="footline" id="footPrs"></p>
+  </section>
+
+  <section class="screen" id="s-score">
+    <div class="label"><b id="sc-tag"></b></div>
+    <div class="score" id="sc-list"></div>
+    <h2 id="sc-title"></h2>
+    <p class="verdict" id="sc-text"></p>
+    <p class="prize" id="sc-prize"></p>
+    <div class="spacer"></div>
+    <div class="btns col"><button class="primary" id="sc-next" data-i="sc.next"></button></div>
+    <p class="footline" id="footSc2"></p>
+  </section>
+
+  <section class="screen" id="s-reflex">
+    <div class="label"><b data-i="rf.tag"></b></div>
+    <div class="who" id="rf-who"></div>
+    <h2 data-i="rf.h"></h2>
+    <div class="pad" id="rfpad"><div class="status" id="rf-status" style="font-size:16px"></div></div>
+    <p class="verdict" id="rf-res" style="min-height:44px"></p>
+    <p class="footline" id="footRf"></p>
+  </section>
+
+  <section class="screen" id="s-guess">
+    <div class="label"><b id="gs-tag"></b></div>
+    <div class="who" id="gs-who"></div>
+    <h2 id="gs-q"></h2>
+    <p class="small" id="gs-hint"></p>
+    <div class="opts" id="gs-opts"></div>
+    <p class="footline" id="footGs"></p>
+  </section>
+
+  <section class="screen" id="s-chal">
+    <div class="label"><b data-i="ch.tag"></b></div>
+    <div class="who" id="ch-who"></div>
+    <h2 id="ch-title"></h2>
+    <div class="card center"><p class="secret" id="ch-word" style="font-family:var(--mono);font-size:16px;color:var(--navy)"></p></div>
+    <div class="timer" id="ch-timer" hidden>20</div>
+    <div class="btns col" id="ch-ctl"><button class="ghost" id="ch-reveal" data-i="ch.reveal"></button><button class="primary" id="ch-start" disabled data-i="ch.start"></button></div>
+    <div class="btns" id="ch-judge" hidden><button class="primary" id="ch-ok" data-i="ch.ok"></button><button class="oxblood" id="ch-fail" data-i="ch.fail"></button></div>
+    <p class="small" id="ch-hint"></p>
+    <p class="footline" id="footCh"></p>
+  </section>
+
+  <section class="screen" id="s-dare">
+    <div class="label"><b data-i="d.tag"></b></div>
+    <div class="who" id="d-who"></div>
+    <div class="card"><p class="daretxt" id="d-text"></p><p class="small center" id="d-sub"></p></div>
+    <div class="timer" id="d-timer">15</div>
+    <div class="btns col" id="d-ctl"><button class="primary" id="d-start" data-i="d.start"></button></div>
+    <div class="btns" id="d-judge" hidden><button class="primary" id="d-ok" data-i="d.ok"></button><button class="oxblood" id="d-fail" data-i="d.fail"></button></div>
+    <p class="small center" data-i="d.hint"></p>
+    <p class="footline" id="footD"></p>
+  </section>
+
+  <section class="screen" id="s-final">
+    <div class="label"><b data-i="f.tag"></b></div>
+    <div class="bikewrap"><svg width="120" height="90" viewBox="0 0 120 90"><circle cx="26" cy="66" r="18" fill="none" stroke="#1C2A4A" stroke-width="3"/><circle cx="90" cy="66" r="18" fill="none" stroke="#1C2A4A" stroke-width="3"/><path d="M26 66l20-38h18l16 38M46 28h14M60 66h30M46 28L34 66" stroke="#1C2A4A" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <h1 id="f-title"></h1>
+    <p class="verdict" id="f-prize"></p>
+    <div class="card"><p class="small" id="f-cwho"></p><p id="f-ctext"></p></div>
+    <p class="small" id="f-note"></p>
+    <div class="spacer"></div>
+    <div class="btns"><button class="ghost" id="f-again" data-i="f.again"></button><button class="ghost" id="f-prize2" data-i="f.prize2"></button></div>
+    <div class="btns col"><button class="primary" id="f-rematch" data-i="f.rematch"></button></div>
+    <div class="btns col"><button class="ghost" data-go="s-consent" data-i="f.home"></button></div>
+    <p class="footline" id="footF"></p>
+  </section>
+</div>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const rnd=a=>a[Math.floor(Math.random()*a.length)];
+const buzz=p=>{try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}};
+let lang='pt';const L=x=>typeof x==='string'?x:(x[lang]??x.pt);
+const B=(pt,en)=>({pt,en});
+const pad2=n=>String(n).padStart(2,'0');
+function refNum(){const d=new Date();return `PROTOCOLO LX-2026-0912-${pad2(refCounter++)}`}
+let refCounter=1;
+function nowStr(){const d=new Date();return `${pad2(d.getDate())}/${pad2(d.getMonth()+1)}/${d.getFullYear()} ${pad2(d.getHours())}:${pad2(d.getMinutes())}`}
+const FOOT=B('Nenhum dado é armazenado. Zero fotografias. Este ecrã não tem memória.','No data is stored. Zero photographs. This screen has no memory.');
+function footAll(){$$('.footline').forEach(el=>{el.innerHTML=`${el.dataset.ref||curRef()}<br>${L(FOOT)}`})}
+function curRef(){return `<span class="mono">${state&&state.ref?state.ref:refNum()}</span>`}
+
+/* ---------- i18n ---------- */
+const I={
+ 'c0.tag':B('Termo de consentimento informado · Doc. 0/6','Informed consent form · Doc. 0/6'),
+ 'c0.h':B('Exma. Senhora,','Dear Madam,'),
+ 'c0.p1':B('O presente instrumento constitui um pedido de participação num procedimento experimental de avaliação de compatibilidade interpessoal, conduzido nas instalações informais do estabelecimento Lux Frágil, Lisboa, na presente data.','This instrument constitutes a request for participation in an experimental interpersonal compatibility assessment procedure, conducted on the informal premises of the Lux Frágil establishment, Lisbon, on the present date.'),
+ 'c0.p2':B('A participação é livre, gratuita e reversível a qualquer momento, sem prejuízo para a dignidade de nenhuma das partes, exceto a dos dois requerentes, que já foi previamente comprometida.','Participation is free, unpaid and reversible at any time, without prejudice to the dignity of either party, except that of the two applicants, which has already been previously compromised.'),
+ 'c0.art':B('Nos termos do artigo 3.º do regulamento interno, a recusa constitui resposta válida e estatisticamente relevante.','Under article 3 of the internal regulation, refusal constitutes a valid and statistically relevant response.'),
+ 'c0.yes':B('Consinto','I consent'),'c0.no':B('Não consinto','I do not consent'),
+ 'rf0.tag':B('Registo de recusa · Doc. 0/6','Refusal record · Doc. 0/6'),
+ 'rf0.h':B('Recusa registada.','Refusal recorded.'),
+ 'rf0.p':B('Nos termos do protocolo, a recusa é o resultado com maior validade estatística obtido até à data. Agradecemos a sua colaboração.','Under the protocol, refusal is the result with the highest statistical validity obtained to date. We thank you for your cooperation.'),
+ 'rf0.btn':B('Encerrar sessão','Close session'),
+ 'r1.tag':B('Identificação da participante · Doc. 1/6','Identification of the participant · Doc. 1/6'),
+ 'r1.h':B('Indique a sua qualidade no presente processo.','Please indicate your capacity in the present proceedings.'),
+ 'r1.p':B('A escolha é vinculativa até ao encerramento do processo, ou até à próxima imperial, o que ocorrer primeiro.','The choice is binding until the case is closed, or until the next beer, whichever occurs first.'),
+ 'r1.a':B('Participante — sujeita à avaliação e, nos termos deste documento, também juíza dela.','Participant — subject to the assessment and, under this document, also its judge.'),
+ 'r1.b':B('Auditora externa — sem interesse direto no resultado, apenas na diversão do processo.','External auditor — with no direct interest in the outcome, only in the amusement of the process.'),
+ 'r1.c':B('Comissão de ética — reserva-se o direito de reprovar tudo, por princípio.','Ethics committee — reserves the right to disapprove everything, on principle.'),
+ 'sc.tag':B('Recolha biométrica · Doc. 3/6','Biometric collection · Doc. 3/6'),
+ 'sc.h':B('Coloque o dedo na área de leitura.','Place your finger on the reading area.'),
+ 'sc.p':B('Mantenha a posição durante 2,5 segundos. Qualquer interrupção será registada como hesitação.','Hold the position for 2.5 seconds. Any interruption will be recorded as hesitation.'),
+ 'v.tag':B('Parecer técnico · Doc. 5/6','Technical opinion · Doc. 5/6'),
+ 'v.homo':B('Homologar parecer','Ratify opinion'),'v.indef':B('Indeferir parecer','Reject opinion'),
+ 'cert.stamp':B('APROVADO','APPROVED'),'cert.h':B('Certificado de Compatibilidade','Certificate of Compatibility'),
+ 'cert.valid':B('Válido até ao fecho do estabelecimento. Não transmissível. Não reembolsável.','Valid until the establishment closes. Non-transferable. Non-refundable.'),
+ 'cert.again':B('Emitir segunda via','Issue duplicate copy'),'cert.group':B('Sessão de grupo','Group session'),
+ 'corr.stamp':B('INDEFERIDO','REJECTED'),
+ 'corr.done':B('Medida cumprida','Measure fulfilled'),'corr.again':B('Indeferir novamente','Reject again'),'corr.archive':B('Arquivar processo','Archive case'),
+ 'ar.tag':B('Arquivo do processo · Doc. 6/6','Case archive · Doc. 6/6'),
+ 'ar.h':B('Processo arquivado a favor da participante.','Case archived in favour of the participant.'),
+ 'ar.p':B('Os requerentes ficam obrigados a uma ronda, moralmente. A presente decisão não admite recurso nem apelo à comissão de ética, que aliás já foi para o bar.','The applicants are morally obliged to buy a round. This decision admits no appeal, including to the ethics committee, which has in any case already gone to the bar.'),
+ 'ar.rep':B('Relatório final','Final report'),'ar.restart':B('Reiniciar protocolo','Restart protocol'),
+ 'rp.tag':B('Relatório de encerramento · Doc. 6/6','Closing report · Doc. 6/6'),
+ 'rp.h':B('Obrigado pela sua colaboração científica.','Thank you for your scientific cooperation.'),
+ 'rp.rigor':B('Rigor metodológico','Methodological rigour'),'rp.pac':B('Paciência com os requerentes','Patience with the applicants'),
+ 'rp.corr':B('Medidas corretivas aplicadas','Corrective measures applied'),'rp.acc':B('Concordância auto/hetero','Self/hetero agreement'),
+ 'rp.rec':B('Recomenda o laboratório','Recommends the laboratory'),'rp.recv':B('nos termos legais aplicáveis','under the applicable legal terms'),
+ 'rp.foot':B('Certificado sem qualquer valor legal, comercial ou sentimental. Eventuais afetos, a existirem, ocorrem fora do presente ecrã.','Certificate with no legal, commercial or sentimental value whatsoever. Any affection, should it arise, occurs outside this screen.'),
+ 'rp.btn':B('Reiniciar protocolo para a próxima participante','Restart protocol for the next participant'),
+ 'g.tag':B('Sessão de grupo · Anexo I','Group session · Annex I'),
+ 'g.h':B('Protocolo de avaliação coletiva.','Collective assessment protocol.'),
+ 'g.p':B('De duas a quatro pessoas, um único aparelho telefónico. Cinco rondas normalizadas. Vencedor: um velocípede. Vencidos: medida corretiva.','Two to four people, a single telephone device. Five standardised rounds. Winner: a velocipede. Losers: a corrective measure.'),
+ 'g.addm':B('+ Requerente','+ Applicant'),'g.addf':B('+ Participante','+ Participant'),'g.start':B('Iniciar sessão','Start session'),
+ 'pr.tag':B('Formação de pares · Anexo I-A','Pair formation · Annex I-A'),
+ 'prs.tag':B('Pares constituídos · Anexo I-A','Pairs formed · Annex I-A'),
+ 'prs.h':B('O algoritmo decidiu. A decisão não admite recurso.','The algorithm has decided. The decision admits no appeal.'),
+ 'prs.p':B('Pares formados por maior coincidência de respostas. É assim que a ciência funciona.','Pairs formed by highest response coincidence. This is how science works.'),
+ 'prs.btn':B('Pares, aos vossos lugares','Pairs, to your places'),
+ 'sc.next':B('Ronda seguinte','Next round'),
+ 'rf.tag':B('Ronda I · Teste de reflexos normalizados','Round I · Standardised reflex test'),
+ 'rf.h':B('Toque na área. Aguarde. Quando mudar de cor, toque novamente.','Tap the area. Wait. When it changes colour, tap again.'),
+ 'ch.tag':B('Ronda III · Prova prática','Round III · Practical test'),'ch.reveal':B('Revelar prova (3 s)','Reveal task (3 s)'),'ch.start':B('Iniciar 20 s','Start 20 s'),'ch.ok':B('Cumprida','Fulfilled'),'ch.fail':B('Não cumprida','Not fulfilled'),
+ 'd.tag':B('Ronda V · Prova prática','Round V · Practical test'),'d.start':B('Iniciar 15 s','Start 15 s'),'d.ok':B('Cumprida','Fulfilled'),'d.fail':B('Não cumprida','Not fulfilled'),
+ 'd.hint':B('Os demais participantes deliberam. Vale um ponto. A deliberação não é passível de contestação.','The remaining participants deliberate. Worth one point. The ruling is not open to challenge.'),
+ 'f.prize2':B('Outra formulação do prémio','Another wording of the prize'),
+ 'f.tag':B('Adjudicação final · Anexo I-Z','Final adjudication · Annex I-Z'),'f.again':B('Outra medida corretiva','Another corrective measure'),'f.rematch':B('Nova sessão','New session'),'f.home':B('Regressar ao início','Return to start'),
+};
+function applyI(){$$('[data-i]').forEach(e=>{const v=I[e.dataset.i];if(v)e.textContent=L(v)});$('#lang-pt').classList.toggle('on',lang==='pt');$('#lang-en').classList.toggle('on',lang==='en');
+  renderChips();footAll()}
+$('#lang-pt').onclick=()=>{lang='pt';applyI();refreshDynamic()};$('#lang-en').onclick=()=>{lang='en';applyI();refreshDynamic()};
+function refreshDynamic(){
+  if($('#s-q').classList.contains('on'))renderQ();
+  if($('#s-scan').classList.contains('on')){$('#padtxt').textContent=L(TX.padWait);}
+  if($('#s-verdict').classList.contains('on')&&state.verdictData)renderVerdict();
+}
+
+/* ---------- navigation ---------- */
+let state;
+function reset(){state={eles:[],ela:[],turn:'eles',q:0,corr:0,level:0,usedC:[],ref:refNum(),role:'participante'};scanCb=null}
+function go(id){$$('.screen').forEach(s=>s.classList.remove('on'));$('#'+id).classList.add('on');window.scrollTo(0,0);
+  if(id==='s-scan')resetScan();if(id==='s-report')report();if(id==='s-q')renderQ();if(id==='s-consent')reset();if(id==='s-setup')setupRender();footAll()}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b){buzz(15);go(b.dataset.go)}});
+$$('[data-role]').forEach(b=>b.onclick=()=>{buzz(20);state.role=b.dataset.role;go('s-q')});
+
+/* ---------- preliminary survey ---------- */
+const TX={
+ padWait:B('A aguardar contacto epidérmico…','Awaiting epidermal contact…'),
+ steps:[B('A calibrar sensor…','Calibrating sensor…'),B('A comparar com base de dados inexistente…','Comparing against a non-existent database…'),B('A consultar comissão de ética…','Consulting the ethics committee…'),B('A arredondar por defeito…','Rounding down by default…'),B('A emitir parecer preliminar…','Issuing preliminary opinion…')],
+ early:B('Leitura interrompida. Registada como hesitação (código H-04).','Reading interrupted. Recorded as hesitation (code H-04).'),
+ they:B('Resposta dos requerentes','Response of the applicants'),she:B('Resposta da participante','Response of the participant'),
+ hintThey:B('Sem consulta prévia à participante. Esta pronunciar-se-á de seguida.','No prior consultation with the participant. She will rule on this next.'),
+ hintShe:B('Os requerentes já responderam. Solicita-se honestidade, para fins científicos.','The applicants have already answered. Honesty is requested, for scientific purposes.'),
+ qn:B('Inquérito preliminar','Preliminary survey'),of:B('de','of'),
+};
+const Q=[
+ {t:B('Indique o tempo médio de permanência dos requerentes junto ao bar, em minutos.','State the average time the applicants spend near the bar, in minutes.'),
+  o:[B('Inferior a 15 minutos, o que se considera anómalo.','Under 15 minutes, which is considered anomalous.'),B('Entre 15 e 40 minutos, dentro dos parâmetros esperados.','Between 15 and 40 minutes, within expected parameters.'),B('Superior a 40 minutos, com residência efetiva declarada.','Over 40 minutes, with effective residency declared.')]},
+ {t:B('Classifique a hipótese de os requerentes conhecerem efetivamente o DJ.','Rate the likelihood that the applicants actually know the DJ.'),
+  o:[B('Nula. Nunca se cruzaram sequer com o pódio.','None. They have never even crossed paths with the booth.'),B('Reduzida, mas verbalmente afirmada com convicção.','Low, but verbally asserted with conviction.'),B('Elevada, segundo fonte não verificável — os próprios.','High, according to an unverifiable source — themselves.')]},
+ {t:B('Frequência com que os requerentes afirmam "não costumar frequentar este estabelecimento".','Frequency with which the applicants state that they "don\'t usually come to this establishment".'),
+  o:[B('Uma vez, de forma isolada e crível.','Once, in isolation and credibly.'),B('Duas a três vezes, já com sinais de repetição.','Two to three times, already showing signs of repetition.'),B('Mais de três vezes, constituindo tique de linguagem.','More than three times, constituting a verbal tic.')]},
+ {t:B('Nível de energia declarado versus observado às 05h00.','Declared energy level versus observed energy level at 5:00 a.m.'),
+  o:[B('Coincidente. Caso raro, sujeito a nova auditoria.','Matching. A rare case, subject to further audit.'),B('Declarado superior ao observado, com margem considerável.','Declared higher than observed, by a considerable margin.'),B('Observado superior ao declarado, por excesso de imperiais.','Observed higher than declared, due to an excess of beer.')]},
+];
+function renderQ(){const q=Q[state.q],ela=state.turn==='ela';$('#qtag').textContent=`${L(TX.qn)} · ${state.q+1}/${Q.length}`;
+  const w=$('#qwho');w.textContent=L(ela?TX.she:TX.they);w.className='who '+(ela?'f':'m');$('#qtext').textContent=L(q.t);$('#qhint').textContent=L(ela?TX.hintShe:TX.hintThey);
+  const o=$('#opts');o.innerHTML='';const letters=['A','B','C'];q.o.forEach((l,k)=>{const b=document.createElement('button');b.className='opt';b.innerHTML=`<b class="let">${letters[k]}</b><span>${L(l)}</span>`;
+    b.onclick=()=>{buzz(20);state[state.turn].push(k);state.q++;if(state.q<Q.length)renderQ();else if(!ela){state.turn='ela';state.q=0;renderQ()}else go('s-scan')};o.appendChild(b)});footAll()}
+
+/* scanner */
+let scanT=null,prog=0,scanCb=null;const pad=$('#pad'),ring=pad.querySelector('.ring'),status=$('#status'),padtxt=$('#padtxt');
+function resetScan(){clearInterval(scanT);scanT=null;prog=0;ring.style.setProperty('--cut','100%');pad.classList.remove('hot','go');status.textContent='';padtxt.textContent=L(TX.padWait)}
+pad.addEventListener('pointerdown',e=>{e.preventDefault();if(scanT)return;pad.classList.add('hot');buzz(12);prog=0;padtxt.textContent='';
+  scanT=setInterval(()=>{prog+=2.7;ring.style.setProperty('--cut',(100-prog)+'%');status.textContent=L(TX.steps[Math.min(4,Math.floor(prog/21))]);if(prog%25<3)buzz(8);
+    if(prog>=100){clearInterval(scanT);scanT=null;buzz([50,30,90]);pad.classList.remove('hot');pad.classList.add('go');if(scanCb){const c=scanCb;scanCb=null;c()}else setTimeout(verdict,300)}},40)});
+['pointerup','pointercancel','pointerleave'].forEach(ev=>pad.addEventListener(ev,()=>{if(!scanT)return;clearInterval(scanT);scanT=null;pad.classList.remove('hot','go');ring.style.setProperty('--cut','100%');status.textContent=L(TX.early);padtxt.textContent='';buzz([30,40,30])}));
+
+/* ---------- verdict / parecer ---------- */
+const FIND=[
+ B('Discrepância de 2 pontos entre autoavaliação e observação externa quanto ao conhecimento do DJ.','A 2-point discrepancy between self-assessment and external observation regarding knowledge of the DJ.'),
+ B('Tempo de permanência junto ao bar superior ao declarado em sede de inquérito.','Time spent near the bar exceeding that declared during the survey.'),
+ B('Repetição da expressão "não costumo frequentar este estabelecimento" com frequência estatisticamente anómala.','Repetition of the phrase "I don\'t usually come here" at a statistically anomalous frequency.'),
+ B('Energia declarada não corroborada por observação direta às 05h00.','Declared energy not corroborated by direct observation at 5:00 a.m.'),
+ B('Ausência de qualquer referência a projetos profissionais nos primeiros quatro minutos, facto que se regista favoravelmente.','Absence of any reference to professional projects in the first four minutes, a fact noted favourably.'),
+ B('Contacto visual dentro dos parâmetros considerados socialmente aceitáveis.','Eye contact within parameters deemed socially acceptable.'),
+ B('Postura junto ao bar compatível com espera de bebida, não com vigilância territorial.','Posture near the bar consistent with waiting for a drink, not territorial surveillance.'),
+ B('Um dos requerentes apresenta sorriso classificado como "genuíno com reservas".','One applicant presents a smile classified as "genuine with reservations".'),
+ B('Vocabulário isento de anglicismos desnecessários, o que constitui indicador positivo.','Vocabulary free of unnecessary anglicisms, which constitutes a positive indicator.'),
+ B('Registo de duas tentativas de piada, uma das quais funcionou, nos termos do observador externo.','Two joke attempts recorded, one of which worked, per the external observer.'),
+ B('Grau de nervosismo dentro do intervalo previsto pelo protocolo para as 04h30.','Level of nervousness within the range predicted by the protocol for 4:30 a.m.'),
+ B('Ausência de menção ao signo zodiacal, considerada anomalia estatística positiva.','No mention of star sign, considered a positive statistical anomaly.'),
+ B('Verificou-se consumo de líquidos em proporção adequada ao horário.','Liquid consumption observed at a rate appropriate to the hour.'),
+ B('Um dos requerentes olhou para o telemóvel duas vezes, sem justificação aparente.','One applicant looked at his phone twice, with no apparent justification.'),
+];
+function verdict(){const p=(31+Math.random()*55).toFixed(2).replace('.',',');const lo=(parseFloat(p.replace(',','.'))-9.4).toFixed(2).replace('.',',');const hi=(parseFloat(p.replace(',','.'))+9.4).toFixed(2).replace('.',',');
+  state.verdictData={p,lo,hi,f:[rnd(FIND),rnd(FIND),rnd(FIND)]};
+  renderVerdict();buzz([40,30,60]);go('s-verdict')}
+const RECS=[
+ B('Recomenda-se conversa de 4 a 6 minutos, sem referência a projetos profissionais.','A 4 to 6 minute conversation is recommended, with no reference to professional projects.'),
+ B('Recomenda-se abordagem cautelosa, evitando o tema do signo.','A cautious approach is recommended, avoiding the topic of star signs.'),
+ B('Recomenda-se oferta de bebida não alcoólica, como sinal de boa-fé processual.','A non-alcoholic drink is recommended as a sign of procedural good faith.'),
+ B('Recomenda-se manutenção da distância social regulamentar durante os primeiros três minutos.','Maintaining the regulatory social distance for the first three minutes is recommended.'),
+];
+function renderVerdict(){const d=state.verdictData;$('#vref').innerHTML=`${state.ref} · ${nowStr()}`;$('#vpct').textContent=d.p+' %';
+  $('#vconf').textContent=(lang==='pt'?'Intervalo de confiança 95 %: ':'95% confidence interval: ')+`[${d.lo} %, ${d.hi} %]`;
+  const ul=$('#vfind');ul.innerHTML='';d.f.forEach(f=>{const li=document.createElement('li');li.textContent=L(f);ul.appendChild(li)});
+  $('#vrec').textContent=L(rnd(RECS))}
+$('#vHomo').onclick=()=>{buzz(30);go('s-cert')};
+$('#vIndef').onclick=()=>{buzz(30);corretiva()};
+
+/* ---------- certificate ---------- */
+const CERTTXT=B('Certifica-se, para os devidos efeitos, que os requerentes reúnem condições mínimas para uma abordagem, sujeita a confirmação em tempo real.','It is hereby certified, for all due purposes, that the applicants meet the minimum conditions for an approach, subject to real-time confirmation.');
+function renderCert(){$('#cert-text').textContent=L(CERTTXT);$('#cert-ref').textContent=`${state.ref} · ${nowStr()}`}
+$('#cert-again').onclick=()=>{buzz(20);state.ref=refNum();verdict();go('s-verdict')};
+
+/* ---------- corrective measures ---------- */
+const CORR=[
+ [B('Execução de 10 segundos de deslocação em modo "anatídeo" (pato), sob supervisão da participante.','Execution of 10 seconds of movement in "anatid" (duck) mode, under the participant\'s supervision.'),
+  B('Emissão de elogio formal ao segurança, com registo de testemunha.','Formal compliment to the bouncer, witnessed and recorded.'),
+  B('Leitura em voz alta, em francês inexistente, de um parágrafo à escolha.','Reading a paragraph of choice aloud, in non-existent French.'),
+  B('Deslocação ao bar e regresso em modo formal, sem derramamento de líquidos.','Trip to the bar and back in formal mode, with no spillage of liquids.'),
+  B('Apresentação a um estranho como se não se conhecessem os requerentes entre si há dez anos.','Introducing themselves to a stranger as if the two applicants had not known each other for ten years.')],
+ [B('Narração dos próximos 30 segundos em registo de documentário de natureza.','Narration of the next 30 seconds in the register of a nature documentary.'),
+  B('Obrigatoriedade de responder apenas "compreendido" a qualquer pergunta até à próxima leitura biométrica.','Obligation to answer only "understood" to any question until the next biometric reading.'),
+  B('Reprodução da pose de fotografia de perfil da participante, em ciclo, durante 15 segundos.','Reproduction of the participant\'s profile-photo pose, on loop, for 15 seconds.'),
+  B('Adoção de identidade fictícia de DJ residente perante terceiros, por um minuto.','Adoption of a fictitious resident-DJ identity before third parties, for one minute.'),
+  B('Descrição da própria indumentária em registo de crítico de moda francês.','Description of their own attire in the register of a French fashion critic.')],
+ [B('Execução conjunta de coreografia sincronizada de 20 segundos, composta no momento.','Joint execution of a synchronised 20-second choreography, composed on the spot.'),
+  B('Discurso de agradecimento, tipo cerimónia de entrega de prémios, pela presente reprovação.','Awards-ceremony-style acceptance speech for the present rejection.'),
+  B('Interpretação a cappella do "Hino da Medida Corretiva", com rima obrigatória em "-ux".','A cappella performance of the "Corrective Measure Anthem", with mandatory rhyme in "-ux".'),
+  B('Marcha de robô com bateria fraca até ao bar e retorno, sem paragens intermédias.','Low-battery robot march to the bar and back, with no intermediate stops.')],
+];
+const CORRTITLES=[
+ B('Parecer indeferido. Fundamentação insuficiente.','Opinion rejected. Insufficient grounds.'),
+ B('A participante mantém-se juridicamente superior.','The participant remains legally superior.'),
+ B('Falha processual imputável aos requerentes.','Procedural failure attributable to the applicants.'),
+ B('Zero pontos para a defesa.','Zero points for the defence.'),
+ B('O laboratório apresenta as suas desculpas. Os requerentes apresentarão mais.','The laboratory offers its apologies. The applicants will offer more.'),
+];
+const CORRWHO=[
+ B('Medida corretiva de Nível I, aplicável a um dos requerentes, à escolha da participante.','Level I corrective measure, applicable to one applicant, chosen by the participant.'),
+ B('Medida corretiva de Nível II, aplicável a um dos requerentes, à escolha da participante.','Level II corrective measure, applicable to one applicant, chosen by the participant.'),
+ B('Medida corretiva de Nível III, aplicável a ambos os requerentes, solidariamente.','Level III corrective measure, applicable to both applicants, jointly.'),
+];
+const CORRMETA=[
+ B('Nível I. A comissão ainda está a ser condescendente.','Level I. The committee is still being lenient.'),
+ B('Nível II — Reincidência. O laboratório já percebeu como isto vai acabar.','Level II — Repeat offence. The laboratory already knows how this ends.'),
+ B('Nível III — Reincidência agravada. Já não se trata de humor, trata-se de sobrevivência processual.','Level III — Aggravated repeat offence. This is no longer about humour, it is about procedural survival.'),
+ B('Os autores do protocolo estão sem inspiração e a participante continua a vencer.','The authors of the protocol are out of ideas and the participant keeps winning.'),
+];
+function corretiva(){state.corr++;state.level=Math.min(3,state.level+1);const lv=state.level;const pool=CORR[lv-1].filter(c=>!state.usedC.includes(c));const pick=rnd(pool.length?pool:CORR[lv-1]);state.usedC.push(pick);
+  $('#corrtag').textContent=`${lang==='pt'?'Medida corretiva':'Corrective measure'} · ${state.ref}`;
+  $('#corrtitle').textContent=L(rnd(CORRTITLES));$('#corrwho').textContent=L(CORRWHO[lv-1]);$('#corrtext').textContent=L(pick);
+  $('#corrmeta').textContent=L(state.corr>3?CORRMETA[3]:CORRMETA[lv-1]);$$('.lvl i').forEach((i,k)=>i.classList.toggle('on',k<lv));buzz([40,30,40,30,80]);go('s-corr')}
+$('#corrAgain').onclick=()=>{buzz(30);corretiva()};
+
+function report(){$('#rp-corr').textContent=state.corr;$('#rp-acc').textContent=(state.acc||0)+' %';$('#rp-pac').textContent=Math.max(2,12-state.corr*3)+' %'}
+
+/* ================= GROUP SESSION ================= */
+let G;
+function gReset(){G={players:[],teams:[],judge:null,mode:null,score:[],round:0,ri:0,rf:{i:0,list:[],armed:null,t0:0,timer:null,times:{}},gs:{i:0,secret:null},ch:{i:0,timer:null,left:20},pr:{i:0,ans:[]}}}
+gReset();
+const pname=p=>`${L(p.g==='m'?TXg.him:TXg.her)} ${p.n}`;
+const tname=t=>t.map(i=>pname(G.players[i])).join(' + ');
+function renderChips(){const c=$('#chips');if(!c)return;c.innerHTML='';G.players.forEach((p,i)=>{const d=document.createElement('div');d.className='chip '+p.g;d.innerHTML=`${pname(p)} <button data-rm="${i}">×</button>`;c.appendChild(d)});
+  $$('[data-rm]').forEach(b=>b.onclick=()=>{G.players.splice(+b.dataset.rm,1);renum();setupRender()})}
+function renum(){let m=0,f=0;G.players.forEach(p=>p.n=p.g==='m'?++m:++f)}
+function addP(g){if(G.players.length>=4)return;G.players.push({g,n:0});renum();buzz(15);setupRender()}
+$('#add-m').onclick=()=>addP('m');$('#add-f').onclick=()=>addP('f');
+function decideMode(){const P=G.players,m=P.filter(p=>p.g==='m').length,f=P.filter(p=>p.g==='f').length,n=P.length;
+  if(n<2)return null;if(n===2)return 'duel';
+  if((m===1&&f>=2)||(f===1&&m>=2))return 'dispute';
+  if(m===2&&f===2)return 'pairs';return 'team'}
+const TXg={
+ him:B('Requerente','Applicant'),her:B('Participante','Participant'),
+ modes:{duel:B('Modalidade: confronto direto','Mode: direct confrontation'),duelp:B('Um contra um. O vencedor recebe o velocípede. O vencido empurra-o.','One against one. The winner receives the velocipede. The loser pushes it.'),
+  dispute:B('Modalidade: disputa arbitrada','Mode: arbitrated dispute'),disputep:B('{n} competem sob arbitragem. {j} é a júri e é contemplada com o velocípede a título gratuito.','{n} compete under arbitration. {j} is the judge and is awarded the velocipede free of charge.'),
+  pairs:B('Modalidade: pares algorítmicos','Mode: algorithmic pairs'),pairsp:B('O algoritmo forma dois pares por coincidência de respostas. Par contra par. Prémio: velocípede duplo (tandem).','The algorithm forms two pairs by response coincidence. Pair versus pair. Prize: dual velocipede (tandem).'),
+  team:B('Modalidade: equipas por sorteio','Mode: teams by draw'),teamp:B('Equipas constituídas por sorteio. Prémio: um velocípede a partilhar.','Teams formed by draw. Prize: one velocipede to share.'),
+  need:B('Adicione, no mínimo, duas pessoas ao processo.','Add at least two people to the proceedings.')},
+ prWho:B('{p} responde','{p} answers'),prHint:B('Os restantes participantes deverão fixar o teto, por decoro.','The remaining participants must fix their gaze on the ceiling, for decorum.'),
+ match:B('{n} coincidências','{n} coincidences'),
+ round:B('Ronda','Round'),tie:B('Empate técnico. Nenhuma das partes demonstrou reflexos suficientes.','Technical tie. Neither party demonstrated sufficient reflexes.'),wins:B('{t} vence a presente ronda.','{t} wins the present round.'),
+ rfTurn:B('{p}, é a sua vez','{p}, it is your turn'),arm:B('Toque para armar o sensor','Tap to arm the sensor'),waitp:B('Aguarde…','Wait…'),now:B('AGORA','NOW'),done:B('Concluído','Concluded'),
+ false_:B('Arranque prematuro. {p} regista 999 ms, anulado nos termos do regulamento.','Premature start. {p} is recorded at 999 ms, annulled under the regulation.'),
+ rfc:[B('Resultado suspeito. Indagou-se sobre consumo prévio de álcool.','Suspicious result. Prior alcohol consumption has been inquired into.'),B('Resultado aceitável para a presente hora.','Result acceptable for the present hour.'),B('A imperial já atingiu os dedos.','The beer has already reached the fingers.')],
+ secret:B('{p} responde em regime de sigilo','{p} answers under confidentiality'),guessw:B('{p} formula uma conjetura','{p} formulates a guess'),guessh:B('Qual terá sido a resposta de {p}?','What might {p} have answered?'),
+ hit:B('{t} acertou. Registe-se.','{t} guessed correctly. Noted.'),miss:B('{t} falhou. Registe-se, igualmente.','{t} guessed incorrectly. Also noted.'),secretWas:B('Resposta confidencial revelada: {a}.','Confidential answer revealed: {a}.'),
+ hitc:B('Compatibilidade estatisticamente alarmante.','Statistically alarming compatibility.'),missc:B('Ainda subsiste matéria a instruir.','There is still matter to be examined.'),
+ chWho:B('{t} executa a prova · {j} julga','{t} performs the task · {j} judges'),chTitle:B('Apenas o executante pode observar. Os demais fixam o teto.','Only the performer may look. The rest fix their gaze on the ceiling.'),
+ chGo:B('Proceda. Comunicação verbal vedada em caso de mímica.','Proceed. Verbal communication is prohibited in the case of mime.'),chTime:B('Tempo esgotado. O júri deliberará.','Time is up. The jury shall deliberate.'),chHint:B('O júri é presumivelmente incorruptível.','The jury is presumed incorruptible.'),
+ chOk:B('{t} cumpriu a prova.','{t} fulfilled the task.'),chFail:B('{t} não cumpriu a prova.','{t} did not fulfil the task.'),chWas:B('A prova consistia em: {w}','The task consisted of: {w}'),
+ fWin:B('{t} é adjudicado o velocípede.','{t} is awarded the velocipede.'),fTie:B('Empate. O velocípede permanece à guarda do Lux Frágil.','Tie. The velocipede remains in the custody of Lux Frágil.'),
+ fJudge:B('{j} recebe o velocípede a título gratuito. Termos e condições disponíveis junto ao bar.','{j} receives the velocipede free of charge. Terms and conditions available at the bar.'),
+ fCwho:B('Medida corretiva para {t}','Corrective measure for {t}'),fCwhoTie:B('Medida corretiva para a totalidade dos presentes, nível I','Corrective measure for all present, level I'),
+ fNote:B('Norma da casa: os vencidos podem solicitar "Outra medida corretiva" até surgir uma que os demais considerem merecida.','House rule: losers may request "Another corrective measure" until one deemed deserved by the others appears.'),
+ fNoteM:B('Decisão sem recurso. O júri já se ausentou para o bar.','Decision without appeal. The jury has already left for the bar.'),
+ duoTie:B('Critério de desempate: quem chegar primeiro ao bar.','Tiebreak criterion: whoever reaches the bar first.'),
+ miniPrize:B('Prémio da presente ronda','Prize for the present round'),dareTurn:B('{p}, prova prática atribuída','{p}, practical task assigned'),dOk:B('{p} cumpriu. Ponto atribuído a {t}.','{p} fulfilled it. Point awarded to {t}.'),dFail:B('{p} não cumpriu. Com dignidade processual.','{p} did not fulfil it. With procedural dignity.'),
+ dSub:B('15 segundos. Sem ensaio prévio.','15 seconds. No prior rehearsal.'),
+};
+function setupRender(){renderChips();const mode=decideMode();const P=G.players;$('#add-m').disabled=$('#add-f').disabled=P.length>=4;$('#g-start').disabled=!mode;
+  if(!mode){$('#g-mode').textContent='';$('#g-modep').textContent=L(TXg.modes.need);return}
+  $('#g-mode').textContent=L(TXg.modes[mode]);let p=L(TXg.modes[mode+'p']);
+  if(mode==='dispute'){const jg=P.find(x=>P.filter(y=>y.g===x.g).length===1);p=p.replace('{n}',P.filter(x=>x!==jg).map(pname).join(', ')).replace('{j}',pname(jg))}
+  $('#g-modep').textContent=p}
+$('#g-start').onclick=()=>{const mode=decideMode();if(!mode)return;G.mode=mode;const P=G.players;G.judge=null;buzz(25);
+  if(mode==='duel'){G.teams=[[0],[1]]}
+  else if(mode==='dispute'){const j=P.findIndex(x=>P.filter(y=>y.g===x.g).length===1);G.judge=j;G.teams=P.map((_,i)=>i).filter(i=>i!==j).map(i=>[i])}
+  else if(mode==='team'){const idx=P.map((_,i)=>i).sort(()=>Math.random()-.5);G.teams=[idx.slice(0,2),idx.slice(2)]}
+  if(mode==='pairs'){G.pr={i:0,ans:[]};pairQ();return}
+  G.score=G.teams.map(()=>0);gameStart()};
+
+/* pairs phase */
+const PQ=[
+ {t:B('Indique o comportamento habitual perante uma música desagradável.','State your habitual behaviour when faced with an unpleasant song.'),o:[B('Deslocação estratégica ao bar','Strategic relocation to the bar'),B('Dança executada sem convicção interior','Dance performed without inner conviction'),B('Consulta do telemóvel como pretexto de urgência','Checking the phone as a pretext of urgency')]},
+ {t:B('Qual seria o seu destino caso o estabelecimento encerrasse nesta hora?','What would be your destination should the establishment close at this hour?'),o:[B('Estabelecimento de bifanas','A bifana establishment'),B('Miradouro, com intuito presumivelmente poético','A viewpoint, with presumably poetic intent'),B('Domicílio próprio, com sinceridade','One\'s own home, sincerely')]},
+ {t:B('Qual o superpoder inútil que aceitaria, na íntegra?','Which useless superpower would you fully accept?'),o:[B('Comunicação com répteis domésticos','Communication with domestic reptiles'),B('Conhecimento permanente da localização do isqueiro','Permanent knowledge of the lighter\'s location'),B('Deteção automática do táxi livre','Automatic detection of the available taxi')]},
+];
+function pairQ(){const pr=G.pr;const total=G.players.length*PQ.length;if(pr.i>=total)return pairsForm();const pi=pr.i%G.players.length,qi=Math.floor(pr.i/G.players.length),q=PQ[qi],p=G.players[pi];
+  const w=$('#pr-who');w.textContent=L(TXg.prWho).replace('{p}',pname(p));w.className='who '+p.g;$('#pr-q').textContent=L(q.t);$('#pr-hint').textContent=L(TXg.prHint);
+  const o=$('#pr-opts');o.innerHTML='';const letters=['A','B','C'];q.o.forEach((l,k)=>{const b=document.createElement('button');b.className='opt';b.innerHTML=`<b class="let">${letters[k]}</b><span>${L(l)}</span>`;b.onclick=()=>{buzz(20);(pr.ans[pi]=pr.ans[pi]||[])[qi]=k;pr.i++;pairQ()};o.appendChild(b)});go('s-pair')}
+function pairsForm(){const P=G.players,ms=P.map((p,i)=>i).filter(i=>P[i].g==='m'),fs=P.map((p,i)=>i).filter(i=>P[i].g==='f');const A=G.pr.ans;
+  const sim=(a,b)=>A[a].filter((v,k)=>v===A[b][k]).length;
+  const o1=sim(ms[0],fs[0])+sim(ms[1],fs[1]),o2=sim(ms[0],fs[1])+sim(ms[1],fs[0]);
+  G.teams=o1>=o2?[[ms[0],fs[0]],[ms[1],fs[1]]]:[[ms[0],fs[1]],[ms[1],fs[0]]];
+  const list=$('#pairs-list');list.innerHTML='';G.teams.forEach(t=>{const d=document.createElement('div');d.className='row';d.innerHTML=`<span class="t">${tname(t)}</span><span class="n" style="font-size:15px">${L(TXg.match).replace('{n}',sim(t[0],t[1]))}</span>`;list.appendChild(d)});
+  G.score=[0,0];G.round=0;buzz([50,30,50]);go('s-pairs')}
+$('#prs-go').onclick=()=>{buzz(20);gameStart()};
+
+/* scoreboard */
+const MINI=[B('um cumprimento sem contacto físico','a contactless salutation'),B('uma expressão de "aprovado" dita com solenidade','an "approved" expression stated solemnly'),B('cinco segundos de aplauso protocolar dos vencidos','five seconds of protocolary applause from the losers'),
+ B('o direito de escolher o próximo executante','the right to choose the next performer'),B('um elogio formal, redigido no momento','a formal compliment, drafted on the spot'),B('vénia lenta da parte adversária','a slow bow from the opposing party'),
+ B('brinde com o líquido disponível, nos termos regulamentares','a toast with whatever liquid is available, per regulation'),B('lugar de honra no táxi de regresso','the seat of honour in the return taxi'),B('uma menção honrosa fictícia da parte do DJ','a fictitious honorary mention from the DJ'),
+ B('nada. O prémio consiste no próprio processo.','nothing. The prize consists of the process itself.')];
+function showScore(title,text,next){const l=$('#sc-list');l.innerHTML='';const mx=Math.max(...G.score);
+  G.teams.forEach((t,i)=>{const d=document.createElement('div');d.className='row'+(G.score[i]===mx&&mx>0?' lead':'');d.innerHTML=`<span class="t">${tname(t)}</span><span class="n">${G.score[i]}</span>`;l.appendChild(d)});
+  $('#sc-tag').textContent=`${L(TXg.round)} ${G.round}/${ROUNDS.length}`;$('#sc-prize').textContent=L(TXg.miniPrize)+': '+L(rnd(MINI));$('#sc-title').textContent=title;$('#sc-text').innerHTML=text;$('#sc-next').onclick=next;go('s-score')}
+function winnerText(win){return win===null?L(TXg.tie):L(TXg.wins).replace('{t}',tname(G.teams[win]))}
+
+/* round I: reflex */
+const rfpad=$('#rfpad'),rfs=$('#rf-status');
+function reflexStart(){const r=G.rf;r.list=G.teams.flatMap((t,ti)=>t.map(pi=>[ti,pi]));r.i=0;r.times=G.teams.map(()=>[]);reflexPlayer()}
+function reflexPlayer(){const r=G.rf;if(r.i>=r.list.length)return reflexEnd();const [ti,pi]=r.list[r.i],p=G.players[pi];
+  const w=$('#rf-who');w.textContent=L(TXg.rfTurn).replace('{p}',pname(p));w.className='who '+p.g;$('#rf-res').textContent='';rfpad.className='pad';rfs.textContent=L(TXg.arm);r.armed=null;go('s-reflex')}
+rfpad.addEventListener('pointerdown',e=>{e.preventDefault();if(!$('#s-reflex').classList.contains('on'))return;const r=G.rf;if(r.armed==='done')return;
+  if(r.armed===null){r.armed=false;rfpad.classList.add('hot');rfs.textContent=L(TXg.waitp);buzz(12);r.timer=setTimeout(()=>{r.armed=true;rfpad.classList.remove('hot');rfpad.classList.add('go');rfs.textContent=L(TXg.now);r.t0=performance.now();buzz(70)},1200+Math.random()*2500);return}
+  const [ti,pi]=r.list[r.i],p=G.players[pi];let ms;
+  if(r.armed===false){clearTimeout(r.timer);ms=999;$('#rf-res').innerHTML=`<b>${L(TXg.false_).replace('{p}',pname(p))}</b>`;buzz([30,30,30])}
+  else{ms=Math.round(performance.now()-r.t0);$('#rf-res').innerHTML=`<b>${ms} ms.</b> ${L(TXg.rfc[ms<220?0:ms<350?1:2])}`;buzz(40)}
+  r.times[ti].push(ms);r.armed='done';rfpad.className='pad';rfs.textContent=L(TXg.done);r.i++;setTimeout(reflexPlayer,1500)});
+function reflexEnd(){const best=G.rf.times.map(a=>Math.min(...a));const mn=Math.min(...best);const ws=best.map((b,i)=>b===mn?i:-1).filter(i=>i>=0);const win=ws.length===1?ws[0]:null;if(win!==null)G.score[win]++;
+  showScore(winnerText(win),G.teams.map((t,i)=>`${tname(t)}: <b>${best[i]} ms</b>`).join('<br>'),()=>nextRound())}
+
+/* round II/IV: cross-examination */
+const GQ=[
+ {q:B('Qual a canção que motiva deslocação imediata à pista, sem pudor?','Which song prompts immediate relocation to the dance floor, without embarrassment?'),o:[B('Reggaeton de circulação antiga','Old-circulation reggaeton'),B('Técnica a 140 bpm','Technical music at 140 bpm'),B('Composição de autor nacional, versão remisturada','A national author\'s composition, remixed version')]},
+ {q:B('A que horas prevê abandonar o estabelecimento, com sinceridade processual?','At what time do you anticipate leaving the establishment, with procedural sincerity?'),o:[B('Às 3h, em conformidade com a responsabilidade declarada','At 3 a.m., in accordance with declared responsibility'),B('Às 6h, coincidindo com o nascer do sol','At 6 a.m., coinciding with sunrise'),B('Em simultâneo com a equipa de limpeza','Simultaneously with the cleaning crew')]},
+ {q:B('Qual a pior frase de abordagem já ouvida nestas instalações?','What is the worst approach line ever heard on these premises?'),o:[B('"Não costumo frequentar este tipo de estabelecimento."','"I don\'t usually go to this type of place."'),B('"Conheço pessoalmente o DJ."','"I personally know the DJ."'),B('"Tem lume? Não fumo, mas gostaria de perguntar mesmo assim."','"Got a light? I don\'t smoke, but I wanted to ask anyway."')]},
+ {q:B('Qual a conduta adotada perante uma música de desagrado manifesto?','What conduct is adopted in the face of manifestly disliked music?'),o:[B('Deslocação estratégica ao bar','Strategic relocation to the bar'),B('Dança mantida, sem qualquer entusiasmo interior','Dance maintained, with zero inner enthusiasm'),B('Consulta do telemóvel como simulação de urgência','Checking the phone as a simulation of urgency')]},
+ {q:B('Qual a refeição prevista para as 05h00?','What meal is planned for 5:00 a.m.?'),o:[B('Bifana em pão regional','Bifana in regional bread'),B('Pastelaria de posto de abastecimento','Pastry from a fuel station'),B('Cereais consumidos de pé, na cozinha própria','Cereal consumed standing, in one\'s own kitchen')]},
+ {q:B('Caso fosse obrigatória a tatuagem de uma palavra portuguesa, qual seria?','If tattooing one Portuguese word were mandatory, which would it be?'),o:[B('"Saudade", nos termos do costume','"Saudade", as is customary'),B('"Bifana"','"Bifana"'),B('"Desenrascanço"','"Desenrascanço"')]},
+ {q:B('Qual o talento secreto de menor utilidade prática comprovada?','What is the secret talent with the least proven practical utility?'),o:[B('Imitação sonora do fecho de portas do metropolitano','Sound imitation of subway doors closing'),B('Previsão do desfecho de longas-metragens de qualidade duvidosa','Predicting the ending of films of dubious quality'),B('Deteção infalível da rede sem fios mais fraca disponível','Infallible detection of the weakest available Wi-Fi network')]},
+ {q:B('Qual o primeiro ato ao regressar a casa, presumivelmente às 06h00?','What is the first act upon returning home, presumably at 6:00 a.m.?'),o:[B('Preparação de torradas com manteiga em quantidade excessiva','Preparing toast with an excessive quantity of butter'),B('Contemplação do ecrã do telemóvel, com arrependimento','Contemplation of the phone screen, with regret'),B('Formulação da promessa de que terá sido a última vez','Formulating the promise that this was the last time')]},
+ {q:B('Qual das seguintes inexatidões foi proferida esta noite?','Which of the following inaccuracies was uttered tonight?'),o:[B('"Apenas mais uma."','"Just one more."'),B('"Parto dentro de dez minutos."','"I\'m leaving in ten minutes."'),B('"Conheço esta composição musical."','"I know this musical piece."')]},
+ {q:B('Que dança de emergência é executada quando ninguém observa?','What emergency dance is performed when no one is watching?'),o:[B('O movimento denominado "robô", executado incorretamente','The movement known as "the robot", incorrectly executed'),B('Movimentação exclusiva dos ombros','Exclusive shoulder movement'),B('Indicação repetida do teto, com convicção','Repeated pointing at the ceiling, with conviction')]},
+];
+function guessStart(){G.gs={i:0,order:[],used:[]};const T=G.teams;
+  if(G.judge!==null)T.forEach((t,ti)=>{G.gs.order.push({ans:[G.judge],gs:t,team:ti});G.gs.order.push({ans:t,gs:[G.judge],team:ti})});
+  else if(T[0].length===2)T.forEach((t,ti)=>{G.gs.order.push({ans:[t[0]],gs:[t[1]],team:ti});G.gs.order.push({ans:[t[1]],gs:[t[0]],team:ti})});
+  else T.forEach((t,ti)=>G.gs.order.push({ans:T[1-ti],gs:t,team:ti}));
+  guessStep()}
+function guessStep(){const g=G.gs;if(g.i>=g.order.length)return nextRound();const st=g.order[g.i];const pool=GQ.filter(q=>!g.used.includes(q));const q=rnd(pool.length?pool:GQ);g.used.push(q);
+  const nm=ix=>ix.map(i=>pname(G.players[i])).join(' + ');const gA=G.players[st.ans[0]].g,gG=G.players[st.gs[0]].g;
+  const render=phase=>{const w=$('#gs-who');w.textContent=phase==='secret'?L(TXg.secret).replace('{p}',nm(st.ans)):L(TXg.guessw).replace('{p}',nm(st.gs));w.className='who '+(phase==='secret'?gA:gG);
+    $('#gs-tag').textContent=`${lang==='pt'?'Ronda II/IV · Inquérito cruzado':'Round II/IV · Cross-examination'} · ${g.i+1}/${g.order.length}`;$('#gs-q').textContent=L(q.q);$('#gs-hint').textContent=phase==='secret'?L(TXg.prHint):L(TXg.guessh).replace('{p}',nm(st.ans));
+    const o=$('#gs-opts');o.innerHTML='';const letters=['A','B','C'];q.o.forEach((l,k)=>{const b=document.createElement('button');b.className='opt';b.innerHTML=`<b class="let">${letters[k]}</b><span>${L(l)}</span>`;
+      b.onclick=()=>{buzz(20);if(phase==='secret'){g.secret=k;render('guess')}else{const hit=k===g.secret;if(hit)G.score[st.team]++;g.i++;
+        showScore(L(hit?TXg.hit:TXg.miss).replace('{t}',tname(G.teams[st.team])),`${L(TXg.secretWas).replace('{a}','<b>'+L(q.o[g.secret])+'</b>')} ${L(hit?TXg.hitc:TXg.missc)}`,()=>guessStep())}};o.appendChild(b)});go('s-guess')};
+  render('secret')}
+
+/* round V: dares */
+const DARES=[
+ B('Contacto da língua com o nariz. Cinco segundos de tentativa séria e documentada.','Contact of the tongue with the nose. Five seconds of serious, documented attempt.'),
+ B('Discurso de dez segundos utilizando exclusivamente palavras iniciadas pela letra R.','A ten-second speech using exclusively words beginning with the letter R.'),
+ B('Manutenção de contacto visual fixo com o interlocutor por dez segundos, sem sorriso.','Fixed eye contact with the interlocutor for ten seconds, without smiling.'),
+ B('Recitação do alfabeto em ordem inversa, até à letra M.','Recitation of the alphabet in reverse order, down to the letter M.'),
+ B('Expressão facial de fotografia de passaporte durante dez segundos, sem pestanejar.','Passport-photo facial expression for ten seconds, without blinking.'),
+ B('Imitação de felino doméstico a solicitar alimento às 06h00.','Impersonation of a domestic feline requesting food at 6:00 a.m.'),
+ B('Contagem até dez num idioma germânico inexistente.','Counting to ten in a non-existent Germanic language.'),
+ B('Execução de movimento dançante recorrendo exclusivamente às sobrancelhas.','Execution of a dance movement using exclusively the eyebrows.'),
+ B('Interpretação de estátua em processo de derretimento lento.','Interpretation of a statue in the process of slowly melting.'),
+ B('Saudação protocolar ao segurança, com vénia solene, à distância regulamentar.','A protocolary salute to the bouncer, with a solemn bow, at the regulatory distance.'),
+ B('Pronúncia da expressão "Lux Frágil" com sotaques brasileiro, castelhano e eslavo.','Pronunciation of the phrase "Lux Frágil" with Brazilian, Castilian and Slavic accents.'),
+ B('Aplauso autodirigido de dez segundos, na qualidade de admirador próprio.','Ten seconds of self-directed applause, in the capacity of one\'s own admirer.'),
+ B('Simulação de comunicação por rádio, reportando a situação a um quartel-general fictício.','Simulation of radio communication, reporting the situation to a fictitious headquarters.'),
+ B('Sorriso publicitário de pasta dentífrica, mantido por dez segundos.','Toothpaste-advertisement smile, maintained for ten seconds.'),
+ B('Simulação de sinalização a um táxi que reiteradamente não para, por dez segundos.','Simulation of hailing a taxi that repeatedly fails to stop, for ten seconds.'),
+];
+function dareStart(){G.d={list:G.teams.flatMap((t,ti)=>t.map(pi=>[ti,pi])).sort(()=>Math.random()-.5),i:0,used:G.d?G.d.used:[],timer:null};dareStep()}
+function dareStep(){const d=G.d;if(d.i>=d.list.length)return nextRound();const [ti,pi]=d.list[d.i],p=G.players[pi];const pool=DARES.filter(x=>!d.used.includes(x));d.cur=rnd(pool.length?pool:DARES);d.used.push(d.cur);
+  const w=$('#d-who');w.textContent=L(TXg.dareTurn).replace('{p}',pname(p));w.className='who '+p.g;$('#d-text').textContent=L(d.cur);$('#d-sub').textContent=L(TXg.dSub);
+  $('#d-timer').textContent='15';$('#d-ctl').hidden=false;$('#d-judge').hidden=true;go('s-dare')}
+$('#d-start').onclick=()=>{const d=G.d;let left=15;$('#d-ctl').hidden=true;buzz(50);clearInterval(d.timer);d.timer=setInterval(()=>{left--;$('#d-timer').textContent=left;if(left<=3)buzz(15);if(left<=0){clearInterval(d.timer);$('#d-judge').hidden=false;buzz([70,40,70])}},1000)};
+function dareJudge(ok){const d=G.d;clearInterval(d.timer);const [ti,pi]=d.list[d.i],p=G.players[pi];if(ok)G.score[ti]++;d.i++;
+  showScore(L(ok?TXg.dOk:TXg.dFail).replace('{p}',pname(p)).replace('{t}',tname(G.teams[ti])),'',()=>dareStep())}
+$('#d-ok').onclick=()=>{buzz(25);dareJudge(true)};$('#d-fail').onclick=()=>{buzz(25);dareJudge(false)};
+
+/* rounds engine */
+const ROUNDS=['reflex','guess','chal','guess','dare'];
+function nextRound(){if(G.ri>=ROUNDS.length)return gameFinal();const r=ROUNDS[G.ri++];G.round=G.ri;({reflex:reflexStart,guess:guessStart,chal:chalStart,dare:dareStart})[r]()}
+function gameStart(){G.ri=0;G.round=0;G.d=null;nextRound()}
+
+/* round III: prova prática (mime/challenge) */
+const CH=[
+ B('Mímica: elétrico 28 em hora de ponta','Mime: tram 28 at rush hour'),B('Mímica: segurança do estabelecimento às 06h00','Mime: establishment bouncer at 6:00 a.m.'),B('Mímica: DJ que extraviou o suporte digital','Mime: DJ who misplaced the digital media'),
+ B('Mímica: veículo de aluguer que não efetua paragem','Mime: hired vehicle that fails to stop'),B('Mímica: sardinha em processo de grelhagem','Mime: sardine undergoing grilling'),B('Mímica: rede metropolitana encerrada às 02h00','Mime: subway network closed at 2:00 a.m.'),
+ B('Mímica: pessoa a simular atendimento telefónico na pista de dança','Mime: person simulating a phone call on the dance floor'),
+ B('Prova: indução de riso no interlocutor em 20 segundos, sem recurso à palavra','Task: induce laughter in the interlocutor within 20 seconds, without recourse to speech'),
+ B('Prova: descrição do estabelecimento recorrendo exclusivamente a sons','Task: description of the establishment using exclusively sounds'),
+ B('Prova: coreografia sincronizada de 10 segundos, composta no momento','Task: 10-second synchronised choreography, composed on the spot'),
+ B('Mímica: pastelaria em processo de cozedura','Mime: pastry undergoing baking'),B('Mímica: turista extraviado com mapa em suporte de papel','Mime: lost tourist with a paper map'),
+ B('Mímica: ave marinha em apropriação indevida de alimento alheio','Mime: seabird in unlawful appropriation of another\'s food'),B('Mímica: fila de espera junto ao bar às 04h00','Mime: queue at the bar at 4:00 a.m.'),
+ B('Prova: recitação de composição poética de quatro versos sobre bebida a temperatura inadequada','Task: recitation of a four-line poem about a beverage at an inadequate temperature'),
+ B('Prova: apresentação comercial do velocípede ao júri, como se de veículo de luxo se tratasse','Task: commercial pitch of the velocipede to the jury, as if it were a luxury vehicle'),
+ B('Prova: simulação de assistente de navegação a indicar o percurso até ao bar','Task: simulation of a navigation assistant giving directions to the bar'),
+ B('Prova: interpretação vocal, de boca fechada, de composição a adivinhar pelo par','Task: closed-mouth vocal interpretation of a composition, for the pair to guess'),
+ B('Prova: narrativa de 20 segundos em que a totalidade dos acontecimentos decorre favoravelmente (hipótese remota)','Task: 20-second narrative in which all events unfold favourably (a remote hypothesis)'),
+ B('Prova: dramatização do segurança a recusar entrada a uma ave urbana','Task: dramatisation of the bouncer denying entry to an urban bird'),
+];
+function chalStart(){G.ch={i:0,timer:null,left:20,used:G.ch?G.ch.used:[]};chalStep()}
+function chalStep(){const c=G.ch;if(c.i>=G.teams.length)return nextRound();const ti=c.i,t=G.teams[ti];const pool=CH.filter(x=>!c.used.includes(x));c.word=rnd(pool);c.used.push(c.word);c.left=20;
+  const jury=G.judge!==null?pname(G.players[G.judge]):tname(G.teams[1-ti]);
+  const w=$('#ch-who');w.textContent=L(TXg.chWho).replace('{t}',tname(t)).replace('{j}',jury);w.className='who '+G.players[t[0]].g;
+  const wd=$('#ch-word');wd.textContent=L(c.word);wd.classList.remove('show');$('#ch-timer').hidden=true;$('#ch-timer').textContent='20';$('#ch-ctl').hidden=false;$('#ch-judge').hidden=true;$('#ch-start').disabled=true;
+  $('#ch-title').textContent=L(TXg.chTitle);$('#ch-hint').textContent=L(TXg.chHint);go('s-chal')}
+$('#ch-reveal').onclick=()=>{const wd=$('#ch-word');wd.classList.add('show');buzz(15);setTimeout(()=>{wd.classList.remove('show');$('#ch-start').disabled=false},3000)};
+$('#ch-start').onclick=()=>{const c=G.ch;$('#ch-ctl').hidden=true;$('#ch-timer').hidden=false;$('#ch-title').textContent=L(TXg.chGo);buzz(50);
+  c.timer=setInterval(()=>{c.left--;$('#ch-timer').textContent=c.left;if(c.left<=5)buzz(15);if(c.left<=0){clearInterval(c.timer);$('#ch-title').textContent=L(TXg.chTime);$('#ch-word').classList.add('show');$('#ch-judge').hidden=false;buzz([70,40,70])}},1000)};
+function chalJudge(ok){const c=G.ch;clearInterval(c.timer);const ti=c.i;if(ok)G.score[ti]++;c.i++;
+  showScore(L(ok?TXg.chOk:TXg.chFail).replace('{t}',tname(G.teams[ti])),L(TXg.chWas).replace('{w}','<b>'+L(c.word)+'</b>'),()=>chalStep())}
+$('#ch-ok').onclick=()=>{buzz(25);chalJudge(true)};$('#ch-fail').onclick=()=>{buzz(25);chalJudge(false)};
+
+/* final: adjudication */
+const FPRIZE=[
+ B('Um velocípede (bicicleta), entregue em data a definir, sujeito a disponibilidade.','A velocipede (bicycle), delivered on a date to be determined, subject to availability.'),
+ B('Um velocípede duplo (tandem). A escolha de quem ocupa o lugar dianteiro fica reservada para o táxi.','A dual velocipede (tandem). The choice of who occupies the front seat is reserved for the taxi.'),
+ B('Um velocípede meramente hipotético, cujo orgulho associado é, todavia, real.','A merely hypothetical velocipede, whose associated pride is, nonetheless, real.'),
+ B('O velocípede será entregue às 06h00, à porta do estabelecimento. Presumivelmente, não será.','The velocipede shall be delivered at 6:00 a.m. at the establishment\'s door. Presumably, it will not be.'),
+ B('Um velocípede e um pastel de nata previamente comprimido em bolso.','A velocipede and a pastel de nata previously compressed in a pocket.'),
+ B('Um velocípede equipado com cesto, destinado ao arrependimento acumulado da presente noite.','A velocipede equipped with a basket, intended for the accumulated regret of the present night.'),
+ B('Um velocípede e o título honorífico de Pessoa Menos Confusa das presentes instalações.','A velocipede and the honorary title of Least Confused Person on these premises.'),
+ B('Um velocípede com campainha. A campainha consiste no vencido pronunciando a palavra "trim".','A velocipede with a bell. The bell consists of the loser uttering the word "ring".'),
+];
+function gameFinal(){const mx=Math.max(...G.score);const ws=G.score.map((s,i)=>s===mx?i:-1).filter(i=>i>=0);G.winner=ws.length===1?ws[0]:null;
+  $('#f-title').textContent=G.winner===null?L(TXg.fTie):L(TXg.fWin).replace('{t}',tname(G.teams[G.winner]));
+  let prize=L(rnd(FPRIZE));if(G.judge!==null&&G.winner!==null)prize+=' '+L(TXg.fJudge).replace('{j}',pname(G.players[G.judge]));if(G.winner===null&&G.mode==='duel')prize+=' '+L(TXg.duoTie);
+  $('#f-prize').textContent=prize;finalCorretiva();buzz([60,40,60,40,140]);go('s-final')}
+function finalCorretiva(){const losers=G.winner===null?G.teams.flat():G.teams.filter((t,i)=>i!==G.winner).flat();const allF=losers.every(i=>G.players[i].g==='f');
+  const lv=G.winner===null||allF?1:rnd([1,2,3]);const pick=rnd(CORR[lv-1]);
+  $('#f-cwho').textContent=G.winner===null?L(TXg.fCwhoTie):L(TXg.fCwho).replace('{t}',losers.map(i=>pname(G.players[i])).join(' + '));
+  $('#f-ctext').innerHTML=L(pick);$('#f-note').textContent=L(allF?TXg.fNote:TXg.fNoteM)}
+$('#f-again').onclick=()=>{buzz(15);finalCorretiva()};
+$('#f-rematch').onclick=()=>{buzz(15);G.score=G.teams.map(()=>0);gameStart()};
+$('#f-prize2').onclick=()=>{buzz(15);$('#f-prize').textContent=L(rnd(FPRIZE))};
+
+document.addEventListener('contextmenu',e=>{if(e.target.closest('.pad'))e.preventDefault()});
+
+/* hook certificate render on nav */
+const goOrig=go;
+go=function(id){goOrig(id);if(id==='s-cert')renderCert()};
+
+reset();applyI();
+</script>
+</body>
+</html>
