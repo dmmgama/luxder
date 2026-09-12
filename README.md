@@ -4,7 +4,7 @@ App paródia de dating para uma noite no Lux Frágil (Lisboa), 2026-09-12. Um fi
 
 ## Estrutura
 
-- `index.html` — a app (v0.3, documento completo para GitHub Pages). `luxder.html` é o mesmo conteúdo sem wrapper, usado para o Artifact.
+- `index.html` — a app v0.3. Live: https://dmmgama.github.io/luxder/ · repo: https://github.com/dmmgama/luxder · `luxder.html` é o mesmo sem wrapper (Artifact).
 - `mockups/mockups.html` — 3 direções visuais. Publicado em https://claude.ai/code/artifact/21327ff8-bf89-4121-a270-c9495484e09e
 - `research/` — os dois relatórios do research analyst (psicologia e design; castigos)
 - `docs/GRILL-LOG.md` — decisões do grill, por ordem

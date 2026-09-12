@@ -54,3 +54,11 @@ Placar sempre visível entre rondas. Cada ronda vale 1 ponto.
 - Toggle EN discreto para o público internacional do Lux.
 - Ronda 4 "Tribunal": afirmação sobre um dos rapazes, ela decide verdadeiro/falso, sentença gerada.
 - Gerador de bio em 1 toque.
+
+## v0.3 (deploy: https://dmmgama.github.io/luxder/)
+
+- PT/EN em todos os textos (toggle no topo). 2 skins funcionais: Cartoon Néon e Sticker Pop (toggle no topo).
+- Jogo "Corrida à Bicicleta" para 2-4 pessoas. Modo decidido automaticamente: Duelo (1+1), Disputa (1 de um lado, 2-3 do outro: a pessoa sozinha é júri e "vem de brinde com a bicicleta"), Pares (2+2: 3 perguntas inusitadas, pares por respostas iguais, depois par contra par), Equipas (outras combinações, sorteio).
+- 8 rondas para ~25 min: reflexos, adivinha, parvoíces, desafio, adivinha, parvoíces, desafio, reflexos. Prémio parcial estúpido em cada placar. Prémio final: bicicleta (12 variantes). Castigo para quem perde.
+- Parvoíces: 26 tarefas de 10 s (língua no nozinho do nariz, alfabeto ao contrário, cara de passaporte...). Sem contacto, sem bebida obrigatória.
+- iOS: viewport, sem color-mix, sem callout no long-press, 100dvh, safe-area.
