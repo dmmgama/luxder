@@ -1,0 +1,442 @@
+<title>Luxder</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@600;800&display=swap">
+<style>
+:root{
+  --ink:#0B0A16; --card:#17152B; --line:#2A2745;
+  --cream:#FFF4DC; --muted:#A9A4C7;
+  --pink:#FF4FA3; --lime:#C9FF3A; --sky:#5EE3FF; --sun:#FFC63A;
+  --display:'Bangers',Impact,'Arial Black',sans-serif;
+  --body:'Nunito','Segoe UI',system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--ink);color:var(--cream);font-family:var(--body);font-weight:600;
+  padding-block:0;padding-inline:16px;overflow-x:hidden;
+  background-image:radial-gradient(ellipse at 20% 0%,#2a1440 0,transparent 55%),radial-gradient(ellipse at 90% 100%,#0d2a3a 0,transparent 50%)}
+.app{max-width:440px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;position:relative}
+.top{display:flex;justify-content:space-between;align-items:center;padding:14px 0 6px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.top b{font-family:var(--display);font-size:26px;letter-spacing:.04em;color:var(--pink);text-shadow:3px 3px 0 #5a1236}
+.badge{border:2px solid var(--line);border-radius:999px;padding:3px 10px;font-size:11px}
+.screen{display:none;flex:1;flex-direction:column;gap:16px;padding-block:10px 24px;animation:pop .28s cubic-bezier(.2,1.4,.4,1)}
+.screen.on{display:flex}
+@keyframes pop{from{transform:scale(.94);opacity:0}to{transform:scale(1);opacity:1}}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(40px,11vw,54px);line-height:.95;margin:0;letter-spacing:.03em;text-wrap:balance}
+h2{font-family:var(--display);font-weight:400;font-size:clamp(30px,8vw,40px);line-height:1;margin:0;letter-spacing:.03em;text-wrap:balance}
+p{margin:0;font-size:18px;line-height:1.35}
+.small{font-size:13px;color:var(--muted);line-height:1.4}
+.spacer{flex:1}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.btns.col{grid-template-columns:1fr}
+button{font-family:var(--display);font-size:clamp(24px,7vw,32px);letter-spacing:.04em;border:0;border-radius:22px;padding:22px 10px;
+  color:var(--ink);cursor:pointer;min-height:96px;line-height:1;box-shadow:0 6px 0 #00000080;transition:transform .08s}
+button:active{transform:translateY(4px);box-shadow:0 2px 0 #00000080}
+button:focus-visible{outline:4px solid var(--sky);outline-offset:3px}
+.yes{background:var(--pink)} .no{background:var(--lime)}
+.ghost{background:var(--card);color:var(--cream);border:3px solid var(--line);box-shadow:none;min-height:64px;font-size:22px;padding:14px}
+.card{background:var(--card);border:3px solid var(--line);border-radius:26px;padding:18px;display:flex;flex-direction:column;gap:10px}
+.opts{display:grid;grid-template-columns:1fr;gap:10px}
+.opt{background:var(--card);border:3px solid var(--line);border-radius:22px;padding:14px 16px;display:flex;align-items:center;gap:14px;min-height:0;box-shadow:none;color:var(--cream);font-family:var(--body);font-weight:800;font-size:19px;text-align:left}
+.opt svg{width:56px;height:56px;flex:none}
+.opt:active{border-color:var(--pink)}
+.who{font-family:var(--display);font-size:22px;letter-spacing:.05em;color:var(--sky)}
+.who.ela{color:var(--lime)}
+.duoav{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.duoav .card{align-items:center;text-align:center;padding:12px}
+.duoav svg{width:100%;max-width:150px;height:auto}
+.duoav .lbl{font-family:var(--display);font-size:20px;letter-spacing:.05em}
+.pad{aspect-ratio:1;max-width:260px;width:80%;margin:0 auto;border-radius:50%;background:var(--card);border:6px solid var(--line);display:grid;place-items:center;position:relative;touch-action:none;user-select:none;-webkit-user-select:none}
+.pad.hot{border-color:var(--pink);box-shadow:0 0 0 12px #ff4fa333,0 0 60px #ff4fa366}
+.pad svg{width:70%;height:70%}
+.pad .ring{position:absolute;inset:-6px;border-radius:50%;border:6px solid var(--lime);clip-path:inset(0 0 var(--cut,100%) 0);transition:clip-path .05s linear}
+.status{font-family:var(--display);font-size:22px;letter-spacing:.04em;color:var(--sky);text-align:center;min-height:28px}
+.big{font-family:var(--display);font-size:clamp(84px,30vw,140px);line-height:.9;color:var(--sun);text-shadow:5px 5px 0 #5a3a08;text-align:center}
+.verdict{font-size:20px;text-align:center;line-height:1.35}
+.lvl{display:flex;gap:6px}
+.lvl i{flex:1;height:10px;border-radius:99px;background:var(--line)} .lvl i.on{background:var(--pink)}
+.tag{display:inline-block;background:#2b1636;border:2px solid var(--pink);color:var(--pink);border-radius:999px;padding:4px 12px;font-size:13px;letter-spacing:.1em;text-transform:uppercase;align-self:flex-start}
+.tag.lime{background:#1f2a0b;border-color:var(--lime);color:var(--lime)}
+.report{display:grid;grid-template-columns:1fr auto;gap:8px 14px;font-size:17px;align-items:center}
+.report b{font-family:var(--display);font-size:26px;color:var(--lime);letter-spacing:.04em;font-variant-numeric:tabular-nums;text-align:right}
+.score{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;text-align:center}
+.score .t{font-family:var(--display);font-size:22px;letter-spacing:.06em}
+.score .n{font-family:var(--display);font-size:64px;line-height:1;font-variant-numeric:tabular-nums}
+.score .vs{font-family:var(--display);font-size:20px;color:var(--muted)}
+.eles{color:var(--sky)} .elas{color:var(--pink)}
+.timer{font-family:var(--display);font-size:clamp(70px,24vw,110px);line-height:.9;text-align:center;color:var(--lime);font-variant-numeric:tabular-nums}
+.pad.go{border-color:var(--lime);background:#2a3a10;box-shadow:0 0 0 14px #c9ff3a33,0 0 80px #c9ff3a88}
+.secret{filter:blur(14px);transition:filter .2s} .secret.show{filter:none}
+canvas#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:9}
+@media (prefers-reduced-motion:reduce){.screen{animation:none}}
+</style>
+
+<canvas id="fx"></canvas>
+<div class="app">
+  <div class="top"><b>Luxder</b><span class="badge">v0.1 · beta fechada</span></div>
+
+  <!-- 0 BETA -->
+  <section class="screen on" id="s-beta">
+    <span class="tag">Recrutamento de tester</span>
+    <h1>Feita por 2 gajos em 25 minutos.</h1>
+    <p>Sem investidores, sem propósito sério. Precisamos de uma tester com bom gosto. Demora 20 segundos.</p>
+    <div class="spacer"></div>
+    <div class="btns"><button class="yes" data-go="s-q">Aceito testar</button><button class="no" data-go="s-recusa">Não, obrigada</button></div>
+    <div class="btns col"><button class="ghost" id="comp-start">⚔️ Modo competição: Eles vs Elas</button></div>
+    <p class="small">Não guardamos nada. Zero fotos. Isto morre aqui. Um "não" bem dado também conta como feedback.</p>
+  </section>
+
+  <!-- RECUSA -->
+  <section class="screen" id="s-recusa">
+    <span class="tag lime">Feedback recebido</span>
+    <h1>A app é tão má que nem merece teste.</h1>
+    <p>Resposta certa. +10 pontos de inteligência emocional. Obrigado, tester.</p>
+    <div class="spacer"></div>
+    <div class="btns col"><button class="ghost" data-go="s-beta">Recomeçar para a próxima tester</button></div>
+  </section>
+
+  <!-- 1 PERGUNTAS -->
+  <section class="screen" id="s-q">
+    <span class="tag" id="qtag">Pergunta 1 de 3</span>
+    <div class="who" id="qwho">Eles respondem</div>
+    <h2 id="qtext"></h2>
+    <div class="opts" id="opts"></div>
+    <p class="small" id="qhint"></p>
+  </section>
+
+  <!-- 2 AVATAR RESULT -->
+  <section class="screen" id="s-avatar">
+    <span class="tag">O avatar que os define</span>
+    <div class="duoav">
+      <div class="card"><div class="lbl" style="color:var(--sky)">Segundo eles</div><div id="av-eles"></div></div>
+      <div class="card"><div class="lbl" style="color:var(--lime)">Segundo ela</div><div id="av-ela"></div></div>
+    </div>
+    <h2 id="avname"></h2>
+    <p class="verdict" id="avmsg" style="color:var(--sky)"></p>
+    <div class="spacer"></div>
+    <div class="btns col"><button class="yes" data-go="s-scan">Validar com o scanner</button></div>
+  </section>
+
+  <!-- 3 SCANNER -->
+  <section class="screen" id="s-scan">
+    <span class="tag">Validação biométrica</span>
+    <h2 id="scan-title">Põe o dedo aqui e segura.</h2>
+    <div class="pad" id="pad"><div class="ring"></div>
+      <svg viewBox="0 0 100 100" fill="none" stroke="#FF4FA3" stroke-width="4" stroke-linecap="round">
+        <path d="M50 18c-18 0-30 13-30 30v10"/><path d="M50 28c-12 0-20 9-20 20v18"/><path d="M50 38c-6 0-10 4-10 10v24"/>
+        <path d="M50 48v22"/><path d="M60 38c6 2 10 7 10 14v20"/><path d="M60 26c12 3 20 12 20 24v14"/><path d="M50 18c18 0 30 13 30 30"/>
+      </svg></div>
+    <div class="status" id="status">A aguardar dedo humano…</div>
+    <p class="small" style="text-align:center">Tecnologia de ponta: 2 segundos, 3 imperiais, 0 ciência.</p>
+  </section>
+
+  <!-- 4 VEREDICTO -->
+  <section class="screen" id="s-verdict">
+    <span class="tag">Resultado</span>
+    <div class="big" id="pct">73%</div>
+    <p class="verdict" id="vtext"></p>
+    <p class="small" style="text-align:center">Fonte: estudo inventado da Universidade de Alfama, 2026.</p>
+    <div class="spacer"></div>
+    <p class="small" style="text-align:center">Como tester, avalia esta piada:</p>
+    <div class="btns"><button class="yes" data-go="s-match">Aprovado</button><button class="no" id="chumbar">Chumbado</button></div>
+  </section>
+
+  <!-- MATCH -->
+  <section class="screen" id="s-match">
+    <span class="tag">Aprovado</span>
+    <div class="big" style="color:var(--pink);text-shadow:5px 5px 0 #5a1236">97%</div>
+    <h2>Match. Algoritmo treinado por 2 gajos e 3 imperiais.</h2>
+    <p>Selo: Verificado ✅ por um segurança do Lux.</p>
+    <div class="spacer"></div>
+    <div class="btns"><button class="yes" data-go="s-duo0">Modo a dois</button><button class="ghost" id="comp-start2">Eles vs Elas</button></div>
+  </section>
+
+  <!-- CASTIGO -->
+  <section class="screen" id="s-castigo">
+    <span class="tag lime">Chumbado · castigo para os devs</span>
+    <div class="lvl"><i></i><i></i><i></i></div>
+    <h2 id="ctitle"></h2>
+    <div class="card"><p id="cwho" style="color:var(--sun)"></p><p id="ctext"></p></div>
+    <p class="small" id="cmeta"></p>
+    <div class="spacer"></div>
+    <div class="btns"><button class="yes" data-go="s-scan">Cumprido. Novo scan</button><button class="no" id="chumbar2">Chumbar outra vez</button></div>
+    <div class="btns col"><button class="ghost" data-go="s-win">Ela ganhou. Acabou.</button></div>
+  </section>
+
+  <!-- ELA GANHOU -->
+  <section class="screen" id="s-win">
+    <span class="tag lime">Vitória total</span>
+    <h1>Arrasaste dois rapazes e uma app inteira. 🏆</h1>
+    <p>Eles vão precisar de terapia. Tu só precisas de mais um copo.</p>
+    <div class="spacer"></div>
+    <div class="btns"><button class="ghost" data-go="s-report">Relatório de tester</button><button class="ghost" data-go="s-beta">Recomeçar</button></div>
+  </section>
+
+  <!-- DUO -->
+  <section class="screen" id="s-duo0">
+    <span class="tag">Teste avançado · modo a dois</span>
+    <h2>Dois dedos, um veredicto.</h2>
+    <p>Primeiro o dela. Depois o dele. A app decide quem ganha a noite. Sem recurso.</p>
+    <div class="spacer"></div>
+    <div class="btns col"><button class="yes" id="duo-start">Começar</button></div>
+  </section>
+  <section class="screen" id="s-duo">
+    <span class="tag">Modo a dois</span>
+    <div class="big" id="dpct">64%</div>
+    <h2>Compatibilidade de pista</h2>
+    <p class="verdict" id="dtext"></p>
+    <div class="spacer"></div>
+    <div class="btns"><button class="yes" data-go="s-report">Relatório</button><button class="ghost" data-go="s-beta">Recomeçar</button></div>
+  </section>
+
+
+  <!-- ===== COMPETIÇÃO ===== -->
+  <section class="screen" id="s-c0">
+    <span class="tag">Modo competição · 2 vs 2</span>
+    <h1>Eles vs Elas.</h1>
+    <p>Um telemóvel, 3 rondas, 20 segundos cada. Quem perde cumpre castigo. Se elas perderem, podem delegar o castigo neles.</p>
+    <div class="card"><p><b style="color:var(--lime)">Ronda 1</b> Reflexos: toca quando ficar verde.</p><p><b style="color:var(--lime)">Ronda 2</b> Adivinha: uma equipa responde em segredo, a outra adivinha.</p><p><b style="color:var(--lime)">Ronda 3</b> Mímica: 20 s, a outra equipa é o júri.</p></div>
+    <div class="spacer"></div>
+    <div class="btns col"><button class="yes" id="c-go1">Começar</button></div>
+  </section>
+
+  <section class="screen" id="s-cscore">
+    <span class="tag" id="cs-tag">Placar</span>
+    <div class="score"><div><div class="t eles">Eles</div><div class="n eles" id="sc-eles">0</div></div><div class="vs">VS</div><div><div class="t elas">Elas</div><div class="n elas" id="sc-elas">0</div></div></div>
+    <h2 id="cs-title"></h2>
+    <p class="verdict" id="cs-text"></p>
+    <div class="spacer"></div>
+    <div class="btns col"><button class="yes" id="cs-next">Próxima ronda</button></div>
+  </section>
+
+  <section class="screen" id="s-reflex">
+    <span class="tag">Ronda 1 · Reflexos</span>
+    <div class="who" id="rf-who"></div>
+    <h2 id="rf-title">Toca no círculo. Espera. Quando ficar verde, toca outra vez.</h2>
+    <div class="pad" id="rfpad"><div class="status" id="rf-status" style="font-size:30px">Toca para armar</div></div>
+    <p class="verdict" id="rf-res" style="min-height:52px"></p>
+  </section>
+
+  <section class="screen" id="s-guess">
+    <span class="tag" id="g-tag">Ronda 2 · Adivinha</span>
+    <div class="who" id="g-who"></div>
+    <h2 id="g-q"></h2>
+    <p class="small" id="g-hint"></p>
+    <div class="opts" id="g-opts"></div>
+  </section>
+
+  <section class="screen" id="s-mime">
+    <span class="tag">Ronda 3 · Mímica</span>
+    <div class="who" id="m-who"></div>
+    <h2 id="m-title">Só quem faz a mímica pode ver. Os outros olham para o tecto.</h2>
+    <div class="card" style="text-align:center"><p class="secret" id="m-word" style="font-family:var(--display);font-size:34px;letter-spacing:.04em;color:var(--sun)"></p></div>
+    <div class="timer" id="m-timer" hidden>20</div>
+    <div class="btns col" id="m-ctl"><button class="ghost" id="m-reveal">Mostrar palavra (3 s)</button><button class="yes" id="m-start" disabled style="opacity:.35">Começar 20 s</button></div>
+    <div class="btns" id="m-judge" hidden><button class="yes" id="m-ok">Acertaram</button><button class="no" id="m-fail">Falharam</button></div>
+    <p class="small" id="m-hint">A outra equipa é o júri. Sem subornos.</p>
+  </section>
+
+  <section class="screen" id="s-cfinal">
+    <span class="tag lime">Resultado final</span>
+    <div class="score"><div><div class="t eles">Eles</div><div class="n eles" id="fc-eles">0</div></div><div class="vs">VS</div><div><div class="t elas">Elas</div><div class="n elas" id="fc-elas">0</div></div></div>
+    <h1 id="fc-title"></h1>
+    <div class="card"><p id="fc-who" style="color:var(--sun)"></p><p id="fc-castigo"></p></div>
+    <p class="small" id="fc-note"></p>
+    <div class="spacer"></div>
+    <div class="btns"><button class="ghost" id="fc-again">Outro castigo</button><button class="yes" id="fc-restart">Revanche</button></div>
+    <div class="btns col"><button class="ghost" data-go="s-beta">Voltar ao início</button></div>
+  </section>
+
+  <!-- REPORT -->
+  <section class="screen" id="s-report">
+    <span class="tag">Relatório de tester</span>
+    <h2>Obrigado. A app melhorou 0%.</h2>
+    <div class="card report">
+      <span>Rigor</span><b>94%</b>
+      <span>Paciência com devs</span><b id="r-pac">12%</b>
+      <span>Bugs encontrados</span><b id="r-bugs">0</b>
+      <span>Concordância com eles</span><b id="r-acc">0%</b>
+      <span>Recomenda a amigas</span><b>obviamente</b>
+    </div>
+    <p class="small">Certificado sem valor legal. O engate, se houver, acontece fora do ecrã.</p>
+    <div class="spacer"></div>
+    <div class="btns col"><button class="ghost" data-go="s-beta">Recomeçar para a próxima tester</button></div>
+  </section>
+</div>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const rnd=a=>a[Math.floor(Math.random()*a.length)];
+const buzz=p=>{try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}};
+let state;
+function reset(){state={eles:[],ela:[],turn:'eles',q:0,bugs:0,level:0,usedC:[]};scanCb=null;$('#scan-title').textContent='Põe o dedo aqui e segura.'}
+
+function go(id){$$('.screen').forEach(s=>s.classList.remove('on'));$('#'+id).classList.add('on');window.scrollTo(0,0);
+  if(id==='s-scan')resetScan(); if(id==='s-report')report(); if(id==='s-q')renderQ(); if(id==='s-beta')reset();}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b){buzz(20);go(b.dataset.go)}});
+
+/* ---------- PERGUNTAS (eles e ela respondem) ---------- */
+const ic={
+ pato:`<svg viewBox="0 0 100 100"><ellipse cx="50" cy="66" rx="30" ry="22" fill="#FFC63A"/><circle cx="62" cy="38" r="18" fill="#FFC63A"/><path d="M76 40l16 4-16 6z" fill="#FF7A3A"/><circle cx="66" cy="34" r="3.5" fill="#0B0A16"/></svg>`,
+ gato:`<svg viewBox="0 0 100 100"><path d="M26 40l4-20 16 12h8l16-12 4 20" fill="#A9A4C7"/><ellipse cx="50" cy="58" rx="28" ry="24" fill="#A9A4C7"/><path d="M36 54h12M52 54h12" stroke="#0B0A16" stroke-width="4" stroke-linecap="round"/><path d="M42 74q8 3 16 0" stroke="#0B0A16" stroke-width="2.5" fill="none"/></svg>`,
+ robot:`<svg viewBox="0 0 100 100"><rect x="24" y="28" width="52" height="46" rx="10" fill="#5EE3FF"/><rect x="34" y="40" width="10" height="8" rx="2" fill="#0B0A16"/><rect x="56" y="42" width="10" height="4" rx="2" fill="#0B0A16"/><path d="M38 62q12-6 24 0" stroke="#0B0A16" stroke-width="3" fill="none"/><rect x="30" y="80" width="40" height="10" rx="3" fill="#2A2745" stroke="#C9FF3A" stroke-width="2"/><rect x="32" y="82" width="6" height="6" fill="#C9FF3A"/></svg>`,
+ imperial:`<svg viewBox="0 0 100 100"><rect x="34" y="30" width="32" height="50" rx="4" fill="#FFC63A"/><rect x="34" y="24" width="32" height="12" rx="4" fill="#FFF4DC"/><path d="M66 40h10v22h-10" stroke="#FFC63A" stroke-width="6" fill="none"/></svg>`,
+ phones:`<svg viewBox="0 0 100 100"><path d="M24 60q0-30 26-30t26 30" stroke="#FF4FA3" stroke-width="8" fill="none"/><rect x="18" y="56" width="12" height="20" rx="5" fill="#FF4FA3"/><rect x="70" y="56" width="12" height="20" rx="5" fill="#FF4FA3"/><path d="M40 20l6 6M60 20l-6 6" stroke="#A9A4C7" stroke-width="3"/></svg>`,
+ pastel:`<svg viewBox="0 0 100 100"><path d="M18 50q32-18 64 0v20q-32 16-64 0z" fill="#FFC63A"/><path d="M18 50q32-18 64 0" stroke="#E08A2A" stroke-width="6" fill="none"/><ellipse cx="50" cy="48" rx="24" ry="9" fill="#F6C34C"/><ellipse cx="44" cy="46" rx="6" ry="3" fill="#7A3E12"/></svg>`,
+ dj:`<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="28" fill="#0B0A16" stroke="#A9A4C7" stroke-width="4"/><circle cx="50" cy="50" r="8" fill="#FF4FA3"/><path d="M50 22a28 28 0 0 1 28 28" stroke="#C9FF3A" stroke-width="4" fill="none"/></svg>`,
+ saida:`<svg viewBox="0 0 100 100"><rect x="20" y="30" width="60" height="40" rx="8" fill="#C9FF3A"/><path d="M34 50h26M52 40l10 10-10 10" stroke="#0B0A16" stroke-width="6" fill="none" stroke-linecap="round"/></svg>`,
+ energia:`<svg viewBox="0 0 100 100"><path d="M56 14L30 56h18l-6 30 30-46H54z" fill="#FFC63A" stroke="#E08A2A" stroke-width="3"/></svg>`,
+};
+const Q=[
+ {t:'Se eles fossem um animal no Lux às 5h da manhã?',o:[['pato','Pato perdido'],['gato','Gato desconfiado'],['robot','Robot com 12% de bateria']]},
+ {t:'O que trazem sempre na mão?',o:[['imperial','Imperial morna'],['phones','Auscultadores nunca ligados'],['pastel','Pastel de nata de emergência']]},
+ {t:'Estado atual?',o:[['dj','A fingir que conhecem o DJ'],['saida','À procura da saída'],['energia','Energia para mais 6 horas (mentira)']]},
+];
+function renderQ(){const q=Q[state.q],ela=state.turn==='ela';
+  $('#qtag').textContent=`Pergunta ${state.q+1} de 3`;const w=$('#qwho');w.textContent=ela?'Agora ela responde':'Eles respondem';w.classList.toggle('ela',ela);
+  $('#qtext').textContent=q.t;$('#qhint').textContent=ela?'Eles já responderam. Sê honesta, é para a ciência.':'Sem consultar a tester. Ela vai julgar a seguir.';
+  const o=$('#opts');o.innerHTML='';q.o.forEach(([k,l])=>{const b=document.createElement('button');b.className='opt';b.innerHTML=ic[k]+`<span>${l}</span>`;
+    b.onclick=()=>{buzz(25);state[state.turn].push(k);state.q++;
+      if(state.q<3)renderQ();else if(!ela){state.turn='ela';state.q=0;renderQ()}else avatar()};o.appendChild(b)})}
+
+const NAMES={pato:'Pato',gato:'Gato',robot:'Robot',imperial:'com imperial morna',phones:'de auscultadores desligados',pastel:'com pastel de nata',dj:'que finge conhecer o DJ',saida:'à procura da saída',energia:'com energia falsa'};
+function draw(a){return `<svg viewBox="0 0 100 130">
+  <g>${ic[a[0]].replace(/<\/?svg[^>]*>/g,'')}</g>
+  <g transform="translate(58,60) scale(.45)">${ic[a[1]].replace(/<\/?svg[^>]*>/g,'')}</g>
+  <g transform="translate(2,88) scale(.4)">${ic[a[2]].replace(/<\/?svg[^>]*>/g,'')}</g></svg>`}
+function avatar(){const acc=state.eles.filter((v,i)=>v===state.ela[i]).length;state.acc=Math.round(acc/3*100);
+  $('#av-eles').innerHTML=draw(state.eles);$('#av-ela').innerHTML=draw(state.ela);
+  $('#avname').textContent=`${NAMES[state.ela[0]]} ${NAMES[state.ela[1]]} ${NAMES[state.ela[2]]}.`;
+  $('#avmsg').textContent=acc===3?'Concordância total. Suspeito. Ela conhece-os demasiado bem.':acc===2?'2 em 3. Ela viu-os melhor do que eles se veem.':acc===1?'1 em 3. Eles têm uma imagem de si próprios muito otimista.':'0 em 3. A versão dela é a oficial a partir de agora.';
+  buzz([40,30,60]);go('s-avatar')}
+
+/* ---------- SCANNER ---------- */
+const STEPS=['A ler impressão digital…','A consultar 3 imperiais…','A ignorar o algoritmo…','A perguntar ao segurança…','Quase. Não largues.'];
+let scanT=null,prog=0,scanCb=null;
+const pad=$('#pad'),ring=pad.querySelector('.ring'),status=$('#status');
+function resetScan(){clearInterval(scanT);scanT=null;prog=0;ring.style.setProperty('--cut','100%');pad.classList.remove('hot');status.textContent='A aguardar dedo humano…';}
+function start(e){e.preventDefault();if(scanT)return;pad.classList.add('hot');buzz(15);prog=0;
+  scanT=setInterval(()=>{prog+=2;ring.style.setProperty('--cut',(100-prog)+'%');status.textContent=STEPS[Math.min(STEPS.length-1,Math.floor(prog/22))];
+    if(prog%25===0)buzz(10); if(prog>=100){clearInterval(scanT);scanT=null;done()}},40);}
+function stop(){if(!scanT)return;clearInterval(scanT);scanT=null;pad.classList.remove('hot');ring.style.setProperty('--cut','100%');
+  status.textContent=rnd(['Largaste? A ciência exige 2 segundos.','Dedo em fuga. Tenta outra vez.','Isso foi um toque, não um compromisso.']);buzz([30,40,30]);}
+pad.addEventListener('pointerdown',start);['pointerup','pointercancel','pointerleave'].forEach(ev=>pad.addEventListener(ev,stop));
+function done(){buzz([60,40,120]);confetti();pad.classList.remove('hot');if(scanCb){const c=scanCb;scanCb=null;c()}else verdict();}
+
+/* ---------- VEREDICTO ---------- */
+const V=[
+ 'de probabilidade de dançar a mesma música que tu esta noite. Provavelmente por acidente.',
+ 'de hipótese de contar uma história de trabalho. Sugerimos fuga ao primeiro "no meu projeto".',
+ 'de risco de dizer "não costumo vir cá" pela terceira vez esta semana.',
+ 'de match, segundo um algoritmo treinado numa mesa do Bairro Alto.',
+ 'de probabilidade de a próxima ronda ser paga por ele. A app não é responsável.',
+ 'de chance de ainda estar cá às 6 da manhã. Ele diz que não. O Lux diz que sim.',
+ 'de compatibilidade astral. O signo dele é "atrasado".',
+ 'de probabilidade de pedir o Instagram e depois não seguir. Clássico.',
+];
+function verdict(){const p=Math.floor(31+Math.random()*66);$('#pct').textContent=p+'%';
+  const n=state.ela.length?NAMES[state.ela[0]]+' '+NAMES[state.ela[1]]:'Ele';
+  $('#vtext').innerHTML=`<b style="color:var(--pink)">${n}</b> tem ${p}% ${rnd(V)}`;go('s-verdict')}
+
+/* ---------- CASTIGOS ---------- */
+const C={
+ 1:[['Dançar 10 segundos como um pato.','O outro conta em voz alta.'],['Dizer uma frase inteira em francês inventado.','Com sotaque. Sem rir.'],['Dar um elogio sincero ao segurança.','E voltar com prova testemunhal.'],['Ir ao bar e voltar em bicos de pés.','Sem derramar nada.'],['Apresentar-se ao amigo como se não se conhecessem há 10 anos.','Aperto de mão obrigatório.']],
+ 2:[['Narrar os próximos 30 segundos da noite como um documentário da National Geographic.','Voz grave. "E aqui vemos o macho, perdido."'],['Só pode responder "obviamente" a tudo até ao próximo scan.','A tester faz as perguntas.'],['Fazer a pose de foto de perfil dela, em loop, 15 segundos.','Ela escolhe a pose. Sem recurso.'],['Inventar um nome de DJ e apresentar-se assim a quem passar.','Mínimo 2 pessoas.'],['Descrever o próprio look como crítico de moda francês.','Termina com "non".']],
+ 3:[['Os DOIS fazem uma coreografia sincronizada de 20 segundos, inventada agora.','A tester avalia com nota de 1 a 10.'],['Discurso de agradecimento tipo Óscares por terem sido chumbados.','Agradecer à mãe é obrigatório.'],['Hino do castigo, a capella, 15 segundos, os dois.','O refrão tem de rimar com "Lux".'],['Robot com bateria fraca a andar até ao bar e voltar. Os dois.','Se um cair, recomeça.']],
+};
+const CT=['Erro 404: piada não encontrada.','Ela tem razão. Como sempre.','Falha técnica: humor não encontrado.','0 pontos para nós.','A app pede desculpa. Os rapazes vão pedir mais.','Isto foi ideia de um deles.'];
+function castigo(){state.bugs++;state.level=Math.min(3,state.level+1);const lv=state.level;
+  const pool=C[lv].filter(c=>!state.usedC.includes(c[0]));const pick=rnd(pool.length?pool:C[lv]);state.usedC.push(pick[0]);
+  $('#ctitle').textContent=rnd(CT);$('#cwho').textContent=lv===3?'Castigo ÉPICO para os dois':lv===2?'Castigo MÉDIO para um deles (ela escolhe qual)':'Castigo LEVE para um deles (ela escolhe qual)';
+  $('#ctext').innerHTML=`<b>${pick[0]}</b><br><span class="small">${pick[1]}</span>`;
+  $('#cmeta').textContent=lv===1?'Nível 1. Ainda estás a ser simpática connosco.':lv===2?'Nível 2 desbloqueado. A app já percebeu que perdeu.':state.bugs>3?'Os criadores estão sem ideias e tu continuas a ganhar.':'Nível 3. Isto já não é sobre piada, é sobre sobrevivência deles.';
+  $$('.lvl i').forEach((i,k)=>i.classList.toggle('on',k<lv));buzz([40,30,40,30,80]);go('s-castigo')}
+$('#chumbar').onclick=castigo;$('#chumbar2').onclick=castigo;
+
+/* ---------- DUO ---------- */
+$('#duo-start').onclick=()=>{go('s-scan');$('#scan-title').textContent='Dedo 1: ela. Põe e segura.';
+  scanCb=()=>{status.textContent='Dedo 1 registado. Agora ele.';buzz(50);setTimeout(()=>{resetScan();$('#scan-title').textContent='Dedo 2: ele. Põe e segura.';
+    scanCb=()=>{const p=Math.floor(40+Math.random()*55);$('#dpct').textContent=p+'%';
+      $('#dtext').innerHTML=rnd(['Quem ganha a noite: <b style="color:var(--lime)">ela</b>. Obviamente.','Veredicto: ela lidera a pista, ele segue à distância de segurança.','Compatibilidade confirmada pela impressão digital. A app não sabe o que isso significa.','Ele tem 2 segundos de vantagem. Ela tem o resto da noite.'])+`<br><span class="small">Mesma música esta noite: ${p}%. Mesmo táxi: não comentamos.</span>`;
+      $('#scan-title').textContent='Põe o dedo aqui e segura.';go('s-duo')}},900)}};
+
+/* ---------- REPORT ---------- */
+function report(){$('#r-bugs').textContent=state.bugs;$('#r-acc').textContent=(state.acc||0)+'%';$('#r-pac').textContent=Math.max(2,12-state.bugs*3)+'%';}
+
+
+/* ---------- COMPETIÇÃO 2v2 ---------- */
+let comp;
+function compReset(){comp={eles:0,elas:0,round:0,rf:{i:0,times:{eles:[],elas:[]},armed:null,t0:0,timer:null},g:{i:0,secret:null},m:{i:0,timer:null,left:20}}}
+const ORDER=[['eles','Ele 1'],['elas','Ela 1'],['eles','Ele 2'],['elas','Ela 2']];
+const T=x=>x==='eles'?'Eles':'Elas';
+function startComp(){compReset();go('s-c0')}
+$('#comp-start').onclick=startComp;$('#comp-start2').onclick=startComp;
+$('#c-go1').onclick=()=>{buzz(20);reflexPlayer()};
+function showScore(title,text,next){$('#sc-eles').textContent=comp.eles;$('#sc-elas').textContent=comp.elas;$('#cs-title').textContent=title;$('#cs-text').innerHTML=text;$('#cs-next').onclick=next;$('#cs-tag').textContent='Placar · ronda '+comp.round;go('s-cscore')}
+
+/* Ronda 1: reflexos */
+const rfpad=$('#rfpad'),rfs=$('#rf-status');
+function reflexPlayer(){const r=comp.rf;if(r.i>=4)return reflexEnd();const [team,name]=ORDER[r.i];
+  const w=$('#rf-who');w.textContent=name+', é a tua vez';w.className='who '+team;$('#rf-res').textContent='';rfpad.className='pad';rfs.textContent='Toca para armar';r.armed=null;go('s-reflex')}
+rfpad.addEventListener('pointerdown',e=>{e.preventDefault();if(!comp||!$('#s-reflex').classList.contains('on'))return;const r=comp.rf;
+  if(r.armed===null){r.armed=false;rfpad.classList.add('hot');rfs.textContent='Espera…';buzz(15);
+    r.timer=setTimeout(()=>{r.armed=true;rfpad.classList.remove('hot');rfpad.classList.add('go');rfs.textContent='AGORA';r.t0=performance.now();buzz(80)},1200+Math.random()*2500);return}
+  const [team,name]=ORDER[r.i];let ms;
+  if(r.armed===false){clearTimeout(r.timer);ms=999;$('#rf-res').innerHTML='<b style="color:var(--pink)">Falso arranque.</b> '+name+' conta 999 ms. Clássico.';buzz([30,30,30])}
+  else{ms=Math.round(performance.now()-r.t0);$('#rf-res').innerHTML='<b style="color:var(--lime)">'+ms+' ms.</b> '+(ms<220?'Suspeito. Já bebeste?':ms<350?'Aceitável para as '+new Date().getHours()+'h.':'A imperial já chegou aos dedos.');buzz(40)}
+  r.times[team].push(ms);r.armed='done';rfpad.className='pad';rfs.textContent='Feito';r.i++;setTimeout(reflexPlayer,1600)});
+function reflexEnd(){const t=comp.rf.times,be=Math.min(...t.eles),ba=Math.min(...t.elas);comp.round=1;
+  const win=be<ba?'eles':ba<be?'elas':null;if(win)comp[win]++;
+  showScore(win?T(win)+' levam a ronda 1.':'Empate. Ninguém tem reflexos.','Melhor deles: <b class="eles">'+be+' ms</b> · Melhor delas: <b class="elas">'+ba+' ms</b>',()=>guessStep())}
+
+/* Ronda 2: adivinha */
+const GQ=[
+ {q:'Que música vos faz ir para a pista sem vergonha?',o:['Reggaeton de 2014','Techno a 140 bpm','Remix do Tony Carreira']},
+ {q:'A que horas saem do Lux esta noite, honestamente?',o:['Às 3h, como pessoas responsáveis','Às 6h, com o sol','Com o pessoal da limpeza']},
+ {q:'Pior frase de engate que já ouviram aqui?',o:['"Não costumo vir cá"','"Conheço o DJ"','"Tens lume? Não fumo, mas tens?"']},
+ {q:'O que fazem quando toca uma música que odeiam?',o:['Vão ao bar, estrategicamente','Dançam na mesma, sem alma','Olham para o telemóvel como se fosse urgente']},
+];
+const GORDER=[['elas','eles'],['eles','elas']];
+function guessStep(){const g=comp.g;if(g.i>=2)return mimeStep();const [ans,gs]=GORDER[g.i],q=GQ[(g.i*2+Math.floor(Math.random()*2))%GQ.length];
+  const render=(phase)=>{const team=phase==='secret'?ans:gs;const w=$('#g-who');w.textContent=phase==='secret'?T(team)+' respondem em segredo':T(team)+' adivinham';w.className='who '+team;
+    $('#g-tag').textContent='Ronda 2 · '+(g.i+1)+' de 2';$('#g-q').textContent=q.q;$('#g-hint').textContent=phase==='secret'?T(gs)+', olhem para o tecto. A sério.':'O que é que '+ans+' responderam?';
+    const o=$('#g-opts');o.innerHTML='';q.o.forEach((l,k)=>{const b=document.createElement('button');b.className='opt';b.innerHTML='<span>'+l+'</span>';
+      b.onclick=()=>{buzz(25);if(phase==='secret'){g.secret=k;render('guess')}else{const hit=k===g.secret;if(hit)comp[gs]++;comp.round=2;g.i++;
+        showScore(hit?T(gs)+' acertaram.':T(gs)+' falharam.','Resposta secreta: <b style="color:var(--sun)">'+q.o[g.secret]+'</b>. '+(hit?'Assustadoramente compatíveis.':'Ainda há muito para conhecer.'),()=>guessStep())}};o.appendChild(b)});go('s-guess')};
+  render('secret')}
+
+/* Ronda 3: mímica */
+const MW=['Elétrico 28 à hora de ponta','Pastel de nata a sair do forno','Segurança do Lux às 6h','DJ que perdeu a pen','Táxi que não para no Cais do Sodré','Fila do bar sem dinheiro','Turista perdido em Alfama','Bacalhau a nadar','Sardinha na brasa','Mota de entregas contra o vento','Pessoa a fingir que atende o telemóvel na pista','Metro fechado às 2h'];
+const MORDER=['eles','elas'];
+function mimeStep(){const m=comp.m;if(m.i>=2)return compFinal();const team=MORDER[m.i],jury=team==='eles'?'elas':'eles';m.word=rnd(MW);m.left=20;
+  const w=$('#m-who');w.textContent=T(team)+' fazem mímica · '+T(jury)+' julgam';w.className='who '+team;
+  const wd=$('#m-word');wd.textContent=m.word;wd.classList.remove('show');$('#m-timer').hidden=true;$('#m-timer').textContent='20';$('#m-ctl').hidden=false;$('#m-judge').hidden=true;
+  const st=$('#m-start');st.disabled=true;st.style.opacity=.35;$('#m-title').textContent='Só quem faz a mímica pode ver. Os outros olham para o tecto.';go('s-mime')}
+$('#m-reveal').onclick=()=>{const wd=$('#m-word');wd.classList.add('show');buzz(20);setTimeout(()=>{wd.classList.remove('show');const st=$('#m-start');st.disabled=false;st.style.opacity=1},3000)};
+$('#m-start').onclick=()=>{const m=comp.m;$('#m-ctl').hidden=true;$('#m-timer').hidden=false;$('#m-title').textContent='Sem falar. Sem apontar para coisas reais. Vai.';buzz(60);
+  m.timer=setInterval(()=>{m.left--;$('#m-timer').textContent=m.left;if(m.left<=5)buzz(20);if(m.left<=0){clearInterval(m.timer);$('#m-timer').textContent='0';$('#m-title').textContent='Tempo. Júri, decidam.';$('#m-word').classList.add('show');$('#m-judge').hidden=false;buzz([80,40,80])}},1000)};
+function mimeJudge(ok){const m=comp.m;clearInterval(m.timer);const team=MORDER[m.i];if(ok)comp[team]++;comp.round=3;m.i++;$('#m-judge').hidden=true;
+  showScore(ok?T(team)+' acertaram a mímica.':T(team)+' falharam a mímica.','A palavra era <b style="color:var(--sun)">'+m.word+'</b>.',()=>mimeStep())}
+$('#m-ok').onclick=()=>{buzz(30);mimeJudge(true)};$('#m-fail').onclick=()=>{buzz(30);mimeJudge(false)};
+
+/* Final */
+function compFinal(){$('#fc-eles').textContent=comp.eles;$('#fc-elas').textContent=comp.elas;
+  const loser=comp.eles>comp.elas?'elas':comp.elas>comp.eles?'eles':null;comp.loser=loser;
+  $('#fc-title').textContent=loser==='elas'?'Eles ganharam. Ninguém esperava.':loser==='eles'?'Elas ganharam. Toda a gente esperava.':'Empate. Castigo para os quatro.';
+  fcCastigo();go('s-cfinal');confetti();buzz([60,40,60,40,120])}
+function fcCastigo(){const l=comp.loser;const lv=l==='eles'?rnd([1,2,3]):1;const pick=rnd(C[lv]);
+  $('#fc-who').textContent=l==='eles'?'Castigo para eles':l==='elas'?'Castigo para elas (ou delegam neles, direito adquirido)':'Castigo conjunto, nível leve';
+  $('#fc-castigo').innerHTML='<b>'+pick[0]+'</b><br><span class="small">'+pick[1]+'</span>';
+  $('#fc-note').textContent=l==='elas'?'Regra da casa: elas podem carregar em "Outro castigo" até aparecer um que eles mereçam.':'Sem recurso. O júri já foi para o bar.'}
+$('#fc-again').onclick=()=>{buzz(20);fcCastigo()};$('#fc-restart').onclick=()=>{buzz(20);compReset();reflexPlayer()};
+compReset();
+
+/* ---------- CONFETTI ---------- */
+const cv=$('#fx'),cx=cv.getContext('2d');let ps=[];
+function confetti(){if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;cv.width=innerWidth;cv.height=innerHeight;
+  const cols=['#FF4FA3','#C9FF3A','#5EE3FF','#FFC63A','#FFF4DC'];
+  for(let i=0;i<140;i++)ps.push({x:innerWidth/2,y:innerHeight*.45,vx:(Math.random()-.5)*16,vy:-Math.random()*16-4,r:4+Math.random()*6,c:rnd(cols),a:Math.random()*6,s:(Math.random()-.5)*.3,l:90+Math.random()*40});
+  if(!confetti.run){confetti.run=true;tick()}}
+function tick(){cx.clearRect(0,0,cv.width,cv.height);ps=ps.filter(p=>p.l>0);
+  ps.forEach(p=>{p.vy+=.45;p.x+=p.vx;p.y+=p.vy;p.vx*=.98;p.a+=p.s;p.l--;cx.save();cx.translate(p.x,p.y);cx.rotate(p.a);cx.fillStyle=p.c;cx.globalAlpha=Math.min(1,p.l/30);cx.fillRect(-p.r/2,-p.r/2,p.r,p.r*1.6);cx.restore()});
+  if(ps.length)requestAnimationFrame(tick);else{confetti.run=false;cx.clearRect(0,0,cv.width,cv.height)}}
+reset();
+</script>
