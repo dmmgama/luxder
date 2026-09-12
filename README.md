@@ -4,7 +4,7 @@ App paródia de dating para uma noite no Lux Frágil (Lisboa), 2026-09-12. Um fi
 
 ## Estrutura
 
-- `luxder.html` — a app (v0.2). Abrir no telemóvel. Publicada em https://claude.ai/code/artifact/71fafe2c-90e3-4761-b47d-ccb6bbbf9fcd
+- `index.html` — a app (v0.3, documento completo para GitHub Pages). `luxder.html` é o mesmo conteúdo sem wrapper, usado para o Artifact.
 - `mockups/mockups.html` — 3 direções visuais. Publicado em https://claude.ai/code/artifact/21327ff8-bf89-4121-a270-c9495484e09e
 - `research/` — os dois relatórios do research analyst (psicologia e design; castigos)
 - `docs/GRILL-LOG.md` — decisões do grill, por ordem

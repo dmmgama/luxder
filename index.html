@@ -1,3 +1,15 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Luxder">
+<meta name="theme-color" content="#0B0A16">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦆</text></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%230B0A16'/><text y='.9em' font-size='80' x='8'>🦆</text></svg>">
 <title>Luxder</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@600;800&family=Rubik+Mono+One&family=Rubik:wght@500;800&display=swap">
 <style>
@@ -95,6 +107,8 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
 @media (prefers-reduced-motion:reduce){.screen,.bike{animation:none}}
 </style>
 
+</head>
+<body>
 <canvas id="fx"></canvas>
 <div class="app">
   <div class="top"><b data-go="s-beta">Luxder</b><div class="sw"><button id="lang-pt" class="on">PT</button><button id="lang-en">EN</button><button id="th-neon" class="on">NÉON</button><button id="th-pop">POP</button></div></div>
@@ -624,3 +638,6 @@ function tick(){cx.clearRect(0,0,cv.width,cv.height);ps=ps.filter(p=>p.l>0);ps.f
 document.addEventListener('contextmenu',e=>{if(e.target.closest('.pad'))e.preventDefault()});
 reset();applyI();
 </script>
+
+</body>
+</html>
