@@ -71,7 +71,7 @@ button.ghost{background:transparent;border:1px solid var(--line);min-height:64px
 .stamp.deny{border-color:var(--oxblood);color:var(--oxblood)}
 .stamp.big{position:static;transform:rotate(-8deg);align-self:center;font-size:26px;padding:10px 20px}
 #s-corr .stamp{position:static;align-self:flex-end;transform:rotate(-8deg);margin:-4px 8px -8px 0}
-#s-cert .card{padding:16px} #s-cert .seal{width:80px;height:80px}
+#s-cert .card{padding:16px;gap:8px} #s-cert .seal{width:76px;height:76px} #s-cert .stamp.big{font-size:22px;padding:8px 16px}
 .report b[data-i]{font-size:13px;max-width:55vw}
 #s-final h1{font-size:clamp(24px,6.8vw,30px)} #s-final .bikewrap svg{width:90px;height:68px} #s-final .btns button{min-height:60px;font-size:13.5px}
 .report{display:grid;grid-template-columns:1fr auto;gap:10px 14px;font-size:14.5px;align-items:baseline}
@@ -437,6 +437,7 @@ function refreshDynamic(){
   if(on('s-cert'))renderCert();
   if(on('s-corr')&&state.corrData)renderCorr();
   if(on('s-setup'))setupRender();
+  if(on('s-final'))renderFinal();
 }
 
 /* ---------- navigation ---------- */
@@ -759,17 +760,20 @@ const FPRIZE=[
  B('Um velocípede e o título honorífico de Pessoa Menos Confusa das presentes instalações.','A velocipede and the honorary title of Least Confused Person on these premises.'),
  B('Um velocípede com campainha. A campainha consiste no vencido pronunciando a palavra "trim".','A velocipede with a bell. The bell consists of the loser uttering the word "ring".'),
 ];
-function gameFinal(){const mx=Math.max(...G.score);const ws=G.score.map((s,i)=>s===mx?i:-1).filter(i=>i>=0);G.winner=ws.length===1?ws[0]:null;
-  $('#f-title').textContent=G.winner===null?L(TXg.fTie):L(TXg.fWin).replace('{t}',tname(G.teams[G.winner]));
-  let prize=L(rnd(FPRIZE));if(G.judge!==null&&G.winner!==null)prize+=' '+L(TXg.fJudge).replace('{j}',pname(G.players[G.judge]));if(G.winner===null&&G.mode==='duel')prize+=' '+L(TXg.duoTie);
-  $('#f-prize').textContent=prize;finalCorretiva();buzz([60,40,60,40,140]);go('s-final')}
+function gameFinal(){const mx=Math.max(...G.score);const ws=G.score.map((s,i)=>s===mx?i:-1).filter(i=>i>=0);G.winner=ws.length===1?ws[0]:null;G.fprize=rnd(FPRIZE);
+  renderFinalPrize();finalCorretiva();buzz([60,40,60,40,140]);go('s-final')}
+function renderFinalPrize(){$('#f-title').textContent=G.winner===null?L(TXg.fTie):L(TXg.fWin).replace('{t}',tname(G.teams[G.winner]));
+  let prize=L(G.fprize);if(G.judge!==null&&G.winner!==null)prize+=' '+L(TXg.fJudge).replace('{j}',pname(G.players[G.judge]));if(G.winner===null&&G.mode==='duel')prize+=' '+L(TXg.duoTie);
+  $('#f-prize').textContent=prize}
 function finalCorretiva(){const losers=G.winner===null?G.teams.flat():G.teams.filter((t,i)=>i!==G.winner).flat();const allF=losers.every(i=>G.players[i].g==='f');
-  const lv=G.winner===null||allF?1:rnd([1,2,3]);const pick=rnd(CORR[lv-1]);
+  const lv=G.winner===null||allF?1:rnd([1,2,3]);G.fcorr=rnd(CORR[lv-1]);renderFinalCorr()}
+function renderFinalCorr(){const losers=G.winner===null?G.teams.flat():G.teams.filter((t,i)=>i!==G.winner).flat();const allF=losers.every(i=>G.players[i].g==='f');
   $('#f-cwho').textContent=G.winner===null?L(TXg.fCwhoTie):L(TXg.fCwho).replace('{t}',losers.map(i=>pname(G.players[i])).join(' + '));
-  $('#f-ctext').innerHTML=L(pick);$('#f-note').textContent=L(allF?TXg.fNote:TXg.fNoteM)}
+  $('#f-ctext').textContent=L(G.fcorr);$('#f-note').textContent=L(allF?TXg.fNote:TXg.fNoteM)}
+function renderFinal(){if(!G.teams.length||G.winner===undefined)return;renderFinalPrize();renderFinalCorr()}
 $('#f-again').onclick=()=>{buzz(15);finalCorretiva()};
 $('#f-rematch').onclick=()=>{buzz(15);G.score=G.teams.map(()=>0);gameStart()};
-$('#f-prize2').onclick=()=>{buzz(15);$('#f-prize').textContent=L(rnd(FPRIZE))};
+$('#f-prize2').onclick=()=>{buzz(15);G.fprize=rnd(FPRIZE);renderFinalPrize()};
 
 document.addEventListener('contextmenu',e=>{if(e.target.closest('.pad'))e.preventDefault()});
 
