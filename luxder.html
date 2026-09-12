@@ -538,8 +538,7 @@ const GQ=[
 ];
 function guessStart(){G.gs={i:0,order:[],used:[]};const T=G.teams;
   if(G.judge!==null)T.forEach((t,ti)=>{G.gs.order.push({ans:[G.judge],gs:t,team:ti});G.gs.order.push({ans:t,gs:[G.judge],team:ti})});
-  else if(T[0].length===2)T.forEach((t,ti)=>{G.gs.order.push({ans:[t[0]],gs:[t[1]],team:ti});G.gs.order.push({ans:[t[1]],gs:[t[0]],team:ti})});
-  else T.forEach((t,ti)=>G.gs.order.push({ans:T[1-ti],gs:t,team:ti}));
+  else T.forEach((t,ti)=>{if(t.length===2){G.gs.order.push({ans:[t[0]],gs:[t[1]],team:ti});G.gs.order.push({ans:[t[1]],gs:[t[0]],team:ti})}else G.gs.order.push({ans:T[1-ti],gs:t,team:ti})});
   guessStep()}
 function guessStep(){const g=G.gs;if(g.i>=g.order.length)return guessEnd();const st=g.order[g.i];const pool=GQ.filter(q=>!g.used.includes(q));const q=rnd(pool.length?pool:GQ);g.used.push(q);
   const nm=ix=>ix.map(i=>pname(G.players[i])).join(' + ');const gA=G.players[st.ans[0]].g,gG=G.players[st.gs[0]].g;
@@ -563,7 +562,7 @@ const DARES=[
  B('Dizer "obrigado" a um objeto por tudo o que fez por ti esta noite.','Thank an object for everything it did for you tonight.'),B('Imitar o som do metro a fechar as portas, com aviso.','Imitate the metro doors closing, with the announcement.'),B('Apresentar-te ao grupo com um nome de DJ inventado.','Introduce yourself to the group with a made-up DJ name.'),
  B('Fazer de pombo do Rossio a decidir se rouba uma batata.','Be a Rossio pigeon deciding whether to steal a fry.'),B('Andar como se o chão fosse lava, 5 passos.','Walk as if the floor is lava, 5 steps.'),
 ];
-function dareStart(){G.d={list:G.teams.flatMap((t,ti)=>t.map(pi=>[ti,pi])).sort(()=>Math.random()-.5),i:0,used:G.d?G.d.used:[],timer:null};dareStep()}
+function dareStart(){G.d={list:G.teams.flatMap((t,ti)=>t.map(pi=>[ti,pi])).sort(()=>Math.random()-.5),i:0,used:(G.d&&G.d.used)||[],timer:null};dareStep()}
 function dareStep(){const d=G.d;if(d.i>=d.list.length)return nextRound();const [ti,pi]=d.list[d.i],p=G.players[pi];const pool=DARES.filter(x=>!d.used.includes(x));d.cur=rnd(pool.length?pool:DARES);d.used.push(d.cur);
   const w=$('#d-who');w.textContent=L(TX.dareTurn).replace('{p}',pname(p));w.className='who '+p.g;$('#d-text').textContent=L(d.cur);$('#d-sub').textContent=L(TX.dSub);
   $('#d-timer').textContent='10';$('#d-ctl').hidden=false;$('#d-judge').hidden=true;go('s-dare')}
@@ -587,7 +586,7 @@ const CH=[
  B('Desafio: cantarolar uma música com a boca fechada, o par adivinha','Challenge: hum a song with mouth closed, partner guesses'),B('Desafio: contar uma história de 20 s em que tudo corre bem (impossível)','Challenge: tell a 20 s story where everything goes well (impossible)'),B('Desafio: imitar o segurança a recusar a entrada a um pombo','Challenge: impersonate the bouncer denying entry to a pigeon'),
  B('Desafio: pose de estátua de Lisboa, o outro adivinha qual','Challenge: pose as a Lisbon statue, the other guesses which'),B('Desafio: convencer o júri de que conhecem o DJ, 20 s','Challenge: convince the jury you know the DJ, 20 s'),
 ];
-function chalStart(){G.ch={i:0,timer:null,left:20,used:G.ch?G.ch.used:[]};chalStep()}
+function chalStart(){G.ch={i:0,timer:null,left:20,used:(G.ch&&G.ch.used)||[]};chalStep()}
 function chalStep(){const c=G.ch;if(c.i>=G.teams.length)return nextRound();const ti=c.i,t=G.teams[ti];const pool=CH.filter(x=>!c.used.includes(x));c.word=rnd(pool);c.used.push(c.word);c.left=20;
   const jury=G.judge!==null?pname(G.players[G.judge]):tname(G.teams[1-ti]);
   const w=$('#ch-who');w.textContent=L(TX.chWho).replace('{t}',tname(t)).replace('{j}',jury);w.className='who '+G.players[t[0]].g;
