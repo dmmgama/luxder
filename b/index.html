@@ -70,6 +70,10 @@ button.ghost{background:transparent;border:1px solid var(--line);min-height:64px
 .stamp{position:absolute;top:10px;right:10px;transform:rotate(-14deg);border:3px solid var(--stampred);color:var(--stampred);font-family:var(--mono);font-weight:700;font-size:16px;letter-spacing:.12em;padding:6px 10px;border-radius:4px;opacity:.85}
 .stamp.deny{border-color:var(--oxblood);color:var(--oxblood)}
 .stamp.big{position:static;transform:rotate(-8deg);align-self:center;font-size:26px;padding:10px 20px}
+#s-corr .stamp{position:static;align-self:flex-end;transform:rotate(-8deg);margin:-4px 8px -8px 0}
+#s-cert .card{padding:16px} #s-cert .seal{width:80px;height:80px}
+.report b[data-i]{font-size:13px;max-width:55vw}
+#s-final h1{font-size:clamp(24px,6.8vw,30px)} #s-final .bikewrap svg{width:90px;height:68px} #s-final .btns button{min-height:60px;font-size:13.5px}
 .report{display:grid;grid-template-columns:1fr auto;gap:10px 14px;font-size:14.5px;align-items:baseline}
 .report .k{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .report b{font-family:var(--mono);font-size:16px;color:var(--navy);font-variant-numeric:tabular-nums;text-align:right}
@@ -346,8 +350,7 @@ button.ghost{background:transparent;border:1px solid var(--line);min-height:64px
     <p class="small" id="f-note"></p>
     <div class="spacer"></div>
     <div class="btns"><button class="ghost" id="f-again" data-i="f.again"></button><button class="ghost" id="f-prize2" data-i="f.prize2"></button></div>
-    <div class="btns col"><button class="primary" id="f-rematch" data-i="f.rematch"></button></div>
-    <div class="btns col"><button class="ghost" data-go="s-consent" data-i="f.home"></button></div>
+    <div class="btns"><button class="primary" id="f-rematch" data-i="f.rematch"></button><button class="ghost" data-go="s-consent" data-i="f.home"></button></div>
     <p class="footline" id="footF"></p>
   </section>
 </div>
@@ -427,9 +430,13 @@ function applyI(){$$('[data-i]').forEach(e=>{const v=I[e.dataset.i];if(v)e.textC
   renderChips();footAll()}
 $('#lang-pt').onclick=()=>{lang='pt';applyI();refreshDynamic()};$('#lang-en').onclick=()=>{lang='en';applyI();refreshDynamic()};
 function refreshDynamic(){
-  if($('#s-q').classList.contains('on'))renderQ();
-  if($('#s-scan').classList.contains('on')){$('#padtxt').textContent=L(TX.padWait);}
-  if($('#s-verdict').classList.contains('on')&&state.verdictData)renderVerdict();
+  const on=id=>$('#'+id).classList.contains('on');
+  if(on('s-q'))renderQ();
+  if(on('s-scan')&&!scanT){$('#padtxt').textContent=L(TX.padWait);if($('#status').textContent)$('#status').textContent=L(TX.early);}
+  if(on('s-verdict')&&state.verdictData)renderVerdict();
+  if(on('s-cert'))renderCert();
+  if(on('s-corr')&&state.corrData)renderCorr();
+  if(on('s-setup'))setupRender();
 }
 
 /* ---------- navigation ---------- */
@@ -463,7 +470,7 @@ const Q=[
 function renderQ(){const q=Q[state.q],ela=state.turn==='ela';$('#qtag').textContent=`${L(TX.qn)} · ${state.q+1}/${Q.length}`;
   const w=$('#qwho');w.textContent=L(ela?TX.she:TX.they);w.className='who '+(ela?'f':'m');$('#qtext').textContent=L(q.t);$('#qhint').textContent=L(ela?TX.hintShe:TX.hintThey);
   const o=$('#opts');o.innerHTML='';const letters=['A','B','C'];q.o.forEach((l,k)=>{const b=document.createElement('button');b.className='opt';b.innerHTML=`<b class="let">${letters[k]}</b><span>${L(l)}</span>`;
-    b.onclick=()=>{buzz(20);state[state.turn].push(k);state.q++;if(state.q<Q.length)renderQ();else if(!ela){state.turn='ela';state.q=0;renderQ()}else go('s-scan')};o.appendChild(b)});footAll()}
+    b.onclick=()=>{buzz(20);state[state.turn].push(k);state.q++;if(state.q<Q.length)renderQ();else if(!ela){state.turn='ela';state.q=0;renderQ()}else{state.acc=Math.round(state.ela.filter((v,i)=>v===state.eles[i]).length/Q.length*100);go('s-scan')}};o.appendChild(b)});footAll()}
 
 /* scanner */
 let scanT=null,prog=0,scanCb=null;const pad=$('#pad'),ring=pad.querySelector('.ring'),status=$('#status'),padtxt=$('#padtxt');
@@ -471,7 +478,7 @@ function resetScan(){clearInterval(scanT);scanT=null;prog=0;ring.style.setProper
 pad.addEventListener('pointerdown',e=>{e.preventDefault();if(scanT)return;pad.classList.add('hot');buzz(12);prog=0;padtxt.textContent='';
   scanT=setInterval(()=>{prog+=2.7;ring.style.setProperty('--cut',(100-prog)+'%');status.textContent=L(TX.steps[Math.min(4,Math.floor(prog/21))]);if(prog%25<3)buzz(8);
     if(prog>=100){clearInterval(scanT);scanT=null;buzz([50,30,90]);pad.classList.remove('hot');pad.classList.add('go');if(scanCb){const c=scanCb;scanCb=null;c()}else setTimeout(verdict,300)}},40)});
-['pointerup','pointercancel','pointerleave'].forEach(ev=>pad.addEventListener(ev,()=>{if(!scanT)return;clearInterval(scanT);scanT=null;pad.classList.remove('hot','go');ring.style.setProperty('--cut','100%');status.textContent=L(TX.early);padtxt.textContent='';buzz([30,40,30])}));
+['pointerup','pointercancel','pointerleave'].forEach(ev=>pad.addEventListener(ev,()=>{if(!scanT)return;clearInterval(scanT);scanT=null;pad.classList.remove('hot','go');ring.style.setProperty('--cut','100%');status.textContent=L(TX.early);padtxt.textContent=L(TX.padWait);buzz([30,40,30])}));
 
 /* ---------- verdict / parecer ---------- */
 const FIND=[
@@ -491,7 +498,8 @@ const FIND=[
  B('Um dos requerentes olhou para o telemóvel duas vezes, sem justificação aparente.','One applicant looked at his phone twice, with no apparent justification.'),
 ];
 function verdict(){const p=(31+Math.random()*55).toFixed(2).replace('.',',');const lo=(parseFloat(p.replace(',','.'))-9.4).toFixed(2).replace('.',',');const hi=(parseFloat(p.replace(',','.'))+9.4).toFixed(2).replace('.',',');
-  state.verdictData={p,lo,hi,f:[rnd(FIND),rnd(FIND),rnd(FIND)]};
+  const fs=[];while(fs.length<3){const f=rnd(FIND);if(!fs.includes(f))fs.push(f)}
+  state.verdictData={p,lo,hi,f:fs,rec:rnd(RECS)};
   renderVerdict();buzz([40,30,60]);go('s-verdict')}
 const RECS=[
  B('Recomenda-se conversa de 4 a 6 minutos, sem referência a projetos profissionais.','A 4 to 6 minute conversation is recommended, with no reference to professional projects.'),
@@ -502,14 +510,14 @@ const RECS=[
 function renderVerdict(){const d=state.verdictData;$('#vref').innerHTML=`${state.ref} · ${nowStr()}`;$('#vpct').textContent=d.p+' %';
   $('#vconf').textContent=(lang==='pt'?'Intervalo de confiança 95 %: ':'95% confidence interval: ')+`[${d.lo} %, ${d.hi} %]`;
   const ul=$('#vfind');ul.innerHTML='';d.f.forEach(f=>{const li=document.createElement('li');li.textContent=L(f);ul.appendChild(li)});
-  $('#vrec').textContent=L(rnd(RECS))}
+  $('#vrec').textContent=L(d.rec||rnd(RECS))}
 $('#vHomo').onclick=()=>{buzz(30);go('s-cert')};
 $('#vIndef').onclick=()=>{buzz(30);corretiva()};
 
 /* ---------- certificate ---------- */
 const CERTTXT=B('Certifica-se, para os devidos efeitos, que os requerentes reúnem condições mínimas para uma abordagem, sujeita a confirmação em tempo real.','It is hereby certified, for all due purposes, that the applicants meet the minimum conditions for an approach, subject to real-time confirmation.');
 function renderCert(){$('#cert-text').textContent=L(CERTTXT);$('#cert-ref').textContent=`${state.ref} · ${nowStr()}`}
-$('#cert-again').onclick=()=>{buzz(20);state.ref=refNum();verdict();go('s-verdict')};
+$('#cert-again').onclick=()=>{buzz(20);state.ref=refNum();renderCert();footAll()};
 
 /* ---------- corrective measures ---------- */
 const CORR=[
@@ -547,9 +555,11 @@ const CORRMETA=[
  B('Os autores do protocolo estão sem inspiração e a participante continua a vencer.','The authors of the protocol are out of ideas and the participant keeps winning.'),
 ];
 function corretiva(){state.corr++;state.level=Math.min(3,state.level+1);const lv=state.level;const pool=CORR[lv-1].filter(c=>!state.usedC.includes(c));const pick=rnd(pool.length?pool:CORR[lv-1]);state.usedC.push(pick);
-  $('#corrtag').textContent=`${lang==='pt'?'Medida corretiva':'Corrective measure'} · ${state.ref}`;
-  $('#corrtitle').textContent=L(rnd(CORRTITLES));$('#corrwho').textContent=L(CORRWHO[lv-1]);$('#corrtext').textContent=L(pick);
-  $('#corrmeta').textContent=L(state.corr>3?CORRMETA[3]:CORRMETA[lv-1]);$$('.lvl i').forEach((i,k)=>i.classList.toggle('on',k<lv));buzz([40,30,40,30,80]);go('s-corr')}
+  state.corrData={lv,pick,title:rnd(CORRTITLES),meta:state.corr>3?CORRMETA[3]:CORRMETA[lv-1]};
+  renderCorr();buzz([40,30,40,30,80]);go('s-corr')}
+function renderCorr(){const d=state.corrData;$('#corrtag').textContent=`${lang==='pt'?'Medida corretiva':'Corrective measure'} · ${state.ref}`;
+  $('#corrtitle').textContent=L(d.title);$('#corrwho').textContent=L(CORRWHO[d.lv-1]);$('#corrtext').textContent=L(d.pick);
+  $('#corrmeta').textContent=L(d.meta);$$('.lvl i').forEach((i,k)=>i.classList.toggle('on',k<d.lv))}
 $('#corrAgain').onclick=()=>{buzz(30);corretiva()};
 
 function report(){$('#rp-corr').textContent=state.corr;$('#rp-acc').textContent=(state.acc||0)+' %';$('#rp-pac').textContent=Math.max(2,12-state.corr*3)+' %'}
@@ -572,7 +582,7 @@ function decideMode(){const P=G.players,m=P.filter(p=>p.g==='m').length,f=P.filt
 const TXg={
  him:B('Requerente','Applicant'),her:B('Participante','Participant'),
  modes:{duel:B('Modalidade: confronto direto','Mode: direct confrontation'),duelp:B('Um contra um. O vencedor recebe o velocípede. O vencido empurra-o.','One against one. The winner receives the velocipede. The loser pushes it.'),
-  dispute:B('Modalidade: disputa arbitrada','Mode: arbitrated dispute'),disputep:B('{n} competem sob arbitragem. {j} é a júri e é contemplada com o velocípede a título gratuito.','{n} compete under arbitration. {j} is the judge and is awarded the velocipede free of charge.'),
+  dispute:B('Modalidade: disputa arbitrada','Mode: arbitrated dispute'),disputep:B('{n} competem sob arbitragem. {j} arbitra e recebe o velocípede a título gratuito.','{n} compete under arbitration. {j} arbitrates and receives the velocipede free of charge.'),
   pairs:B('Modalidade: pares algorítmicos','Mode: algorithmic pairs'),pairsp:B('O algoritmo forma dois pares por coincidência de respostas. Par contra par. Prémio: velocípede duplo (tandem).','The algorithm forms two pairs by response coincidence. Pair versus pair. Prize: dual velocipede (tandem).'),
   team:B('Modalidade: equipas por sorteio','Mode: teams by draw'),teamp:B('Equipas constituídas por sorteio. Prémio: um velocípede a partilhar.','Teams formed by draw. Prize: one velocipede to share.'),
   need:B('Adicione, no mínimo, duas pessoas ao processo.','Add at least two people to the proceedings.')},
@@ -588,7 +598,7 @@ const TXg={
  chWho:B('{t} executa a prova · {j} julga','{t} performs the task · {j} judges'),chTitle:B('Apenas o executante pode observar. Os demais fixam o teto.','Only the performer may look. The rest fix their gaze on the ceiling.'),
  chGo:B('Proceda. Comunicação verbal vedada em caso de mímica.','Proceed. Verbal communication is prohibited in the case of mime.'),chTime:B('Tempo esgotado. O júri deliberará.','Time is up. The jury shall deliberate.'),chHint:B('O júri é presumivelmente incorruptível.','The jury is presumed incorruptible.'),
  chOk:B('{t} cumpriu a prova.','{t} fulfilled the task.'),chFail:B('{t} não cumpriu a prova.','{t} did not fulfil the task.'),chWas:B('A prova consistia em: {w}','The task consisted of: {w}'),
- fWin:B('{t} é adjudicado o velocípede.','{t} is awarded the velocipede.'),fTie:B('Empate. O velocípede permanece à guarda do Lux Frágil.','Tie. The velocipede remains in the custody of Lux Frágil.'),
+ fWin:B('Adjudica-se o velocípede a {t}.','The velocipede is awarded to {t}.'),fTie:B('Empate. O velocípede permanece à guarda do Lux Frágil.','Tie. The velocipede remains in the custody of Lux Frágil.'),
  fJudge:B('{j} recebe o velocípede a título gratuito. Termos e condições disponíveis junto ao bar.','{j} receives the velocipede free of charge. Terms and conditions available at the bar.'),
  fCwho:B('Medida corretiva para {t}','Corrective measure for {t}'),fCwhoTie:B('Medida corretiva para a totalidade dos presentes, nível I','Corrective measure for all present, level I'),
  fNote:B('Norma da casa: os vencidos podem solicitar "Outra medida corretiva" até surgir uma que os demais considerem merecida.','House rule: losers may request "Another corrective measure" until one deemed deserved by the others appears.'),
@@ -665,13 +675,12 @@ const GQ=[
 ];
 function guessStart(){G.gs={i:0,order:[],used:[]};const T=G.teams;
   if(G.judge!==null)T.forEach((t,ti)=>{G.gs.order.push({ans:[G.judge],gs:t,team:ti});G.gs.order.push({ans:t,gs:[G.judge],team:ti})});
-  else if(T[0].length===2)T.forEach((t,ti)=>{G.gs.order.push({ans:[t[0]],gs:[t[1]],team:ti});G.gs.order.push({ans:[t[1]],gs:[t[0]],team:ti})});
-  else T.forEach((t,ti)=>G.gs.order.push({ans:T[1-ti],gs:t,team:ti}));
+  else T.forEach((t,ti)=>{if(t.length===2){G.gs.order.push({ans:[t[0]],gs:[t[1]],team:ti});G.gs.order.push({ans:[t[1]],gs:[t[0]],team:ti})}else G.gs.order.push({ans:T[1-ti],gs:t,team:ti})});
   guessStep()}
 function guessStep(){const g=G.gs;if(g.i>=g.order.length)return nextRound();const st=g.order[g.i];const pool=GQ.filter(q=>!g.used.includes(q));const q=rnd(pool.length?pool:GQ);g.used.push(q);
   const nm=ix=>ix.map(i=>pname(G.players[i])).join(' + ');const gA=G.players[st.ans[0]].g,gG=G.players[st.gs[0]].g;
   const render=phase=>{const w=$('#gs-who');w.textContent=phase==='secret'?L(TXg.secret).replace('{p}',nm(st.ans)):L(TXg.guessw).replace('{p}',nm(st.gs));w.className='who '+(phase==='secret'?gA:gG);
-    $('#gs-tag').textContent=`${lang==='pt'?'Ronda II/IV · Inquérito cruzado':'Round II/IV · Cross-examination'} · ${g.i+1}/${g.order.length}`;$('#gs-q').textContent=L(q.q);$('#gs-hint').textContent=phase==='secret'?L(TXg.prHint):L(TXg.guessh).replace('{p}',nm(st.ans));
+    $('#gs-tag').textContent=`${L(TXg.round)} ${G.round===2?'II':'IV'} · ${lang==='pt'?'Inquérito cruzado':'Cross-examination'} · ${g.i+1}/${g.order.length}`;$('#gs-q').textContent=L(q.q);$('#gs-hint').textContent=phase==='secret'?L(TXg.prHint):L(TXg.guessh).replace('{p}',nm(st.ans));
     const o=$('#gs-opts');o.innerHTML='';const letters=['A','B','C'];q.o.forEach((l,k)=>{const b=document.createElement('button');b.className='opt';b.innerHTML=`<b class="let">${letters[k]}</b><span>${L(l)}</span>`;
       b.onclick=()=>{buzz(20);if(phase==='secret'){g.secret=k;render('guess')}else{const hit=k===g.secret;if(hit)G.score[st.team]++;g.i++;
         showScore(L(hit?TXg.hit:TXg.miss).replace('{t}',tname(G.teams[st.team])),`${L(TXg.secretWas).replace('{a}','<b>'+L(q.o[g.secret])+'</b>')} ${L(hit?TXg.hitc:TXg.missc)}`,()=>guessStep())}};o.appendChild(b)});go('s-guess')};
@@ -695,7 +704,7 @@ const DARES=[
  B('Sorriso publicitário de pasta dentífrica, mantido por dez segundos.','Toothpaste-advertisement smile, maintained for ten seconds.'),
  B('Simulação de sinalização a um táxi que reiteradamente não para, por dez segundos.','Simulation of hailing a taxi that repeatedly fails to stop, for ten seconds.'),
 ];
-function dareStart(){G.d={list:G.teams.flatMap((t,ti)=>t.map(pi=>[ti,pi])).sort(()=>Math.random()-.5),i:0,used:G.d?G.d.used:[],timer:null};dareStep()}
+function dareStart(){G.d={list:G.teams.flatMap((t,ti)=>t.map(pi=>[ti,pi])).sort(()=>Math.random()-.5),i:0,used:(G.d&&G.d.used)||[],timer:null};dareStep()}
 function dareStep(){const d=G.d;if(d.i>=d.list.length)return nextRound();const [ti,pi]=d.list[d.i],p=G.players[pi];const pool=DARES.filter(x=>!d.used.includes(x));d.cur=rnd(pool.length?pool:DARES);d.used.push(d.cur);
   const w=$('#d-who');w.textContent=L(TXg.dareTurn).replace('{p}',pname(p));w.className='who '+p.g;$('#d-text').textContent=L(d.cur);$('#d-sub').textContent=L(TXg.dSub);
   $('#d-timer').textContent='15';$('#d-ctl').hidden=false;$('#d-judge').hidden=true;go('s-dare')}
@@ -726,7 +735,7 @@ const CH=[
  B('Prova: narrativa de 20 segundos em que a totalidade dos acontecimentos decorre favoravelmente (hipótese remota)','Task: 20-second narrative in which all events unfold favourably (a remote hypothesis)'),
  B('Prova: dramatização do segurança a recusar entrada a uma ave urbana','Task: dramatisation of the bouncer denying entry to an urban bird'),
 ];
-function chalStart(){G.ch={i:0,timer:null,left:20,used:G.ch?G.ch.used:[]};chalStep()}
+function chalStart(){G.ch={i:0,timer:null,left:20,used:(G.ch&&G.ch.used)||[]};chalStep()}
 function chalStep(){const c=G.ch;if(c.i>=G.teams.length)return nextRound();const ti=c.i,t=G.teams[ti];const pool=CH.filter(x=>!c.used.includes(x));c.word=rnd(pool);c.used.push(c.word);c.left=20;
   const jury=G.judge!==null?pname(G.players[G.judge]):tname(G.teams[1-ti]);
   const w=$('#ch-who');w.textContent=L(TXg.chWho).replace('{t}',tname(t)).replace('{j}',jury);w.className='who '+G.players[t[0]].g;
